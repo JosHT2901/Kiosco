@@ -1,0 +1,34 @@
+.bg-color-light-mode{
+    background-color: #e8e5d1;
+}
+.bg-color-dark-mode{
+    background-color: #000000;
+}
+.bg-color-white
+{
+    background-color: #fff;
+}
+.bg-color-black
+{
+    background-color: #121212;
+}
+.bg-color-contenedor-input
+{
+    background-color: #585858;
+}
+.bg-color-input
+{
+    background-color: #e6e6e6;
+}
+.boton-importante
+{
+    background-color: #0067b8;
+}
+.bg-color-boton-secundario
+{
+    background-color: #cacaca;
+}
+.bg-color-dbedf8
+{
+    background-color: #dbedf8;
+}

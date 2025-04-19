@@ -1,0 +1,49 @@
+.borde-redondeado-2-px {
+    border-radius: 2px;
+}
+.borde-redondeado-5-px {
+    border-radius: 5px;
+}
+
+.borde-redondeado-5-px-derecho {
+    border-radius: 0px 5px 5px 0px;
+}
+
+.borde-redondeado-5-px-izquierdo {
+    border-radius: 5px 0px 0px 5px;
+}
+.borde-redondeado-5-px-superior {
+    border-radius: 5px 5px 0px 0px;
+}
+.borde-redondeado-5-px-inferior {
+    border-radius: 0px 0px 5px 5px;
+}
+.borde-redondeado-10-px {
+    border-radius: 10px;
+}
+.borde-redondeado-10-px-superior {
+    border-radius: 10px 10px 0px 0px ;
+}
+.borde-redondeado-10-px-inferior {
+    border-radius: 0px 0px 10px 10px ;
+}
+.borde-redondeado-15-px {
+    border-radius: 15px;
+}
+
+.borde-redondeado-50-px {
+    border-radius: 50px;
+}
+
+.borde-redondeado-50-px-derecho {
+    border-radius: 0px 50px 50px 0px;
+}
+
+.borde-redondeado-50-px-izquierdo {
+    border-radius: 50px 0px 0px 50px;
+}
+
+.borde-redondeado-50-por-ciento
+{
+    border-radius: 50%;
+}

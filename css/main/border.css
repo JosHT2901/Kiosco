@@ -1,0 +1,23 @@
+.border-1-px-6d6d6d76 {
+    border: 1px solid #6d6d6d76
+}
+.border-1-px-white {
+    border: 1px solid white
+}
+.border-2-px-6d6d6d76 {
+    border: 2px solid #6d6d6d76
+}
+.border-2-px-white {
+    border: 2px solid white;
+}
+.border-004rem-6d6d6d76 {
+    border: 0.04rem solid #6d6d6d76;
+}
+.border-1-px-e6e6e6 {
+    border: 1px solid #e6e6e6
+}
+.border-1-px-6d6d6d76-left-top-right {
+
+    border: 1px solid #6d6d6d76;
+    border-bottom: none;
+}

@@ -1,0 +1,32 @@
+@media (max-width: 750px) {
+    #ContenedorBienvenida {
+        display: none;
+    }
+    #ContenedorSucursalMenu
+    {
+        width: calc(100% - 60px - 170px) !important;
+    }
+    #ContenedorBotonesCuenta
+    {
+        width:  170px !important;
+    }
+}
+@media (max-width: 550px) {
+    #ContenedorHoraMenu
+    {
+        display: none;
+    }
+    
+    #ContenedorBotonesCuenta
+    {
+        width:  120px !important;
+    }
+    #BotonAyudaMenu
+    {
+        display: none;
+    }
+    #ContenedorSucursalMenu
+    {
+        width: calc(100% - 60px - 120px) !important;
+    }
+}

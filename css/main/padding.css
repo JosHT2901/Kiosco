@@ -1,0 +1,26 @@
+.padding-5px-superior-inferior
+{
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.padding-10px-superior-inferior
+{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.padding-10px
+{
+    padding: 10px;
+}
+.padding-20px
+{
+    padding: 20px;
+}
+.padding-5px-lateral
+{
+    padding: 0px 5px;
+}
+.padding-10px-lateral
+{
+    padding: 0px 10px;
+}

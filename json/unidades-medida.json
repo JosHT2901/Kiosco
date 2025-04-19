@@ -1,0 +1,17 @@
+{
+    "unidades_de_medida": [
+      {"nombre": "Kilogramo", "abreviatura": "kg"},
+      {"nombre": "Gramo", "abreviatura": "g"},
+      {"nombre": "Litro", "abreviatura": "L"},
+      {"nombre": "Mililitro", "abreviatura": "ml"},
+      {"nombre": "Centilitro", "abreviatura": "cl"},
+      {"nombre": "Docena", "abreviatura": "dz"},
+      {"nombre": "Centenar", "abreviatura": "ct"},
+      {"nombre": "Rollo", "abreviatura": "rol"},
+      {"nombre": "Metro", "abreviatura": "m"},
+      {"nombre": "Centímetro", "abreviatura": "cm"},
+      {"nombre": "Caja", "abreviatura": "cj"},
+      {"nombre": "Paquete", "abreviatura": "paq"}
+    ]
+  }
+  

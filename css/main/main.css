@@ -1,0 +1,144 @@
+@font-face {
+    font-family: "Montserrat";
+    src: url('../../fonts/Montserrat/Montserrat-Regular.ttf');
+}
+
+@font-face {
+    font-family: "Montserrat-Semi-Bold";
+    src: url('../../fonts/Montserrat/Montserrat-SemiBold.ttf');
+}
+
+@font-face {
+    font-family: "Montserrat-Bold";
+    src: url('../../fonts/Montserrat/Montserrat-Bold.ttf');
+}
+
+html,
+body {
+    margin: 0px auto;
+    min-width: 400px;
+    overflow: auto;
+    background-color: #f4f7fa;
+    height: 100vh;
+}
+
+.overflow-auto {
+    overflow: auto;
+}
+
+.position-relative {
+    position: relative;
+}
+
+.position-absolute {
+    position: absolute;
+}
+
+svg {
+    fill: #585858;
+}
+
+.svg-blanco {
+    fill: #ffffff;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.top-0 {
+    top: 0;
+}
+
+.left-0 {
+    left: 0;
+}
+
+.z-index-10000 {
+    z-index: 10000;
+}
+
+.loader {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f8f8f8;
+}
+
+li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.text-align-right {
+    text-align: right;
+}
+
+.contenedor-botones-ancho-fijo {
+    width: auto;
+    max-width: 100%;
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.scroll-invisible {
+    overflow: auto;
+    /* o scroll si querés forzar */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE 10+ */
+}
+
+.scroll-invisible::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari y Edge */
+}
+
+.borde-izquierdo-derecho {
+    border-left: 1px solid #585858;
+    border-right: 1px solid #585858;
+}
+
+.texto-truncado {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.contenedor-fila {
+    border: 1px solid #e6e6e6;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    width: fit-content;
+}

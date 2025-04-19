@@ -1,0 +1,133 @@
+.boton {
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+}
+
+.boton:hover>.boton-hover {
+    display: flex;
+}
+
+.tarjeta-hover:hover
+{
+    background-color: #dbedf8;
+    color: #1474c4;
+}
+.boton-solo-letra
+{
+    color: #1474c4;
+    font-weight: 700
+}
+.boton-solo-letra:hover
+{
+    color: #013f71;
+}
+.boton-importante
+{
+    background-color: #034d89;;
+}
+.boton-importante:hover
+{
+    background-color: #033864;;
+}
+.tarjeta-3d:hover {
+    transform: translate3d(0, -2px, 0);
+    box-shadow: 2px -1px 6px -3px rgba(100, 100, 100, 0.55);
+    -webkit-box-shadow: 2px -1px 6px -3px rgba(100, 100, 100, 0.55);
+    -moz-box-shadow: 2px -1px 6px -3px rgba(100, 100, 100, 0.55);
+  
+    transition-property: box-shadow, transform;
+    transition-duration: 600ms;
+    transition-timing-function: cubic-bezier(.16, 1, .29, .99);
+    color: #013f71;
+}
+.boton-solo-icono:hover>svg
+{
+    fill:#1474c4;
+}
+.boton-secundario{
+    color: #585858;
+}
+.boton-secundario>svg
+{
+    fill:#585858
+}
+.boton-secundario:hover{
+    background-color: #918f8f;
+    color: white;
+}
+.boton-secundario:hover>div>svg
+{
+    fill:white
+}
+.botones-ancho-fijo {
+    flex-grow: 0;
+    flex-shrink: 0;
+    font-weight: 600;
+}
+
+.tarjeta-menu
+{
+    display: none;
+    background-color: white;
+    position: absolute;
+    z-index: 1000000;
+    min-width: 279px;
+    max-width: 511px;
+    width: 0;
+    box-sizing: border-box;
+    outline: none;
+    overflow: hidden;
+    pointer-events: auto;
+    top: 60px;
+    left: 2px;
+    right: auto;
+    border-radius: 0px 8px 8px 0px;
+    -webkit-transform-origin: top left;
+    -ms-transform-origin: top left;
+    transform-origin: top left;
+    -webkit-animation-duration: .18s;
+    animation-duration: .18s;
+    -webkit-animation-timing-function: ease;
+    animation-timing-function: ease;
+    box-shadow: rgba(0, 0, 0, 0.22) 0px 25.6px 57.6px 0px, rgba(0, 0, 0, 0.18) 0px 4.8px 14.4px 0px;
+}
+.contenedor-tarjeta-menu
+{
+    width: calc(100% - 32px);
+    height: calc(100% - 32px);
+    padding: 16px;
+    max-height: 250px;
+    overflow: auto;
+}
+.tarjeta-cuadrada-menu
+{
+    width: 96px;
+    height: 88px;
+    margin: 10px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    color: black !important;
+}
+.tarjeta-botones-opciones
+{
+    min-width: 122px;
+    height: 88px;
+    margin: 10px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    color: black !important;
+    padding: 0px 10px;
+}
+.tarjeta-cuadrada-menu:hover
+{
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,.1);
+}
+.botones-tarjeta-hover
+{
+    display: none;
+}
+.tarjeta-hover:hover>.botones-tarjeta-hover
+{
+    display: flex;
+}

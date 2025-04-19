@@ -1,0 +1,64 @@
+.input {
+    width: calc(100% - 20px - 4px);
+    border: 2px solid #cacaca;
+    border-radius: 5px;
+    outline: none;
+    padding: 0px 10px 0px 10px;
+    background-color: transparent;
+    box-sizing: content-box;
+    font-size: 0.9rem;
+    font-family: "Montserrat";
+    font-weight: 600;
+    height: calc(100% - 4px);
+}
+input[type='password'] {
+    font-family: Verdana;
+    letter-spacing: 0.125em;
+}
+.contenedor-input-ajustable
+{
+    max-width: 48%;
+    margin: auto;
+}
+@media (max-width: 450px) {
+    .contenedor-input-ajustable
+    {
+        max-width: 100%;
+        margin: auto;
+    }
+}
+
+.checkbox-round {
+    width: 1.5em;
+    height: 1.5em;
+    background-color: white;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.checkbox-round:checked {
+    background-color: #eda500;
+}
+.input-codigo-confirmacion
+{
+    font-size: 3.5rem;
+    text-align: center;
+    color: #585858;
+}
+
+.input:focus {
+    color: #03618d; 
+    font-weight: 600;
+    border: 2px solid #1474c4;
+  }
+
+  .label-input
+  {
+    color: #03618d;
+    font-weight: 600;
+  }

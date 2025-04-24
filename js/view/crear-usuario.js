@@ -7,53 +7,65 @@ const imagenError = '../../icons/windows/error.png';
 const tituloError = 'Revisa la información';
 var NumeroTarjetaSeleccionada = 1;
 $(document).ready(function (e) {
-    CargarPagina(5)
+    CargarPaginaCrearUsuario(1)
+
 })
 
-function CargarPagina(pagina) {
+function CargarPaginaCrearUsuario(pagina) {
     try {
+
         CrearLoader('CargandoPaginaCrearUsuario', "ContenedorPaginaCrearUsuario")
         switch (pagina) {
             case 1:
-                ContenidoPagina1()
+                ContenidoPaginaCrearUsuario_1()
                 break;
             case 2:
-                ContenidoPagina2()
+                ContenidoPaginaCrearUsuario_2()
                 break;
             case 3:
                 if (InformacionUsuario.length != 0) {
-                    ContenidoPagina3();
+                    ContenidoPaginaCrearUsuario_3();
                 } else {
-                    ContenidoPagina1()
+                    ContenidoPaginaCrearUsuario_1()
                 }
                 break
             case 4:
                 if (InformacionUsuario.length != 0 && ContactoUsuario.length != 0) {
-                    ContenidoPagina4();
+                    ContenidoPaginaCrearUsuario_4();
                 } else {
-                    ContenidoPagina1()
+                    ContenidoPaginaCrearUsuario_1()
                 }
                 break;
             case 5:
                 if (InformacionUsuario.length != 0 && ContactoUsuario.length != 0 && InformacionCuenta.length != 0) {
-                    ContenidoPagina5();
+                    ContenidoPaginaCrearUsuario_5();
                 } else {
-                    ContenidoPagina1()
+                    ContenidoPaginaCrearUsuario_1()
                 }
                 break;
             default:
                 break;
         }
+        if (window.self !== window.top) {
+            $("#ColumnaTarjetaLogin").removeClass('anchura-80-por-ciento').addClass('anchura-100-por-ciento')
+            $("#DivContenedorPaginaCrearUsuario").removeClass('min-height-650px');
+            $("form > div").css('max-height', '350px');
+            $("#ContenedorPaginaCrearUsuario").removeClass('box-shadow-1')
+            $('html, body').css('background-color','#ffffff')
+        }
         EliminarLoader('CargandoPaginaCrearUsuario')
         FuncionesInputCrearUsuario()
-    } catch (e) {
-        console.log(e)
+    } catch (error) {
+        EliminarLoader('CargandoPaginaCrearUsuario')
+        $("#ContenedorPaginaCrearUsuario").removeClass('box-shadow-1')
+        ContenidoPaginaGuardado(false, 'Error al obtener información', $("#ContenedorContenidoPaginaCrearUsuario"))
+        console.log(error)
     }
 }
 
 function EventosBotonesPaginaCrearUsuario() {
     $("#BotonInformacionBasica, #BotonEditarInformacionBasica").click(function (e) {
-        CargarPagina(2)
+        CargarPaginaCrearUsuario(2)
     })
     $("#BotonGuardarInformacionCrearUsuario").click(function (e) {
         let contenido;
@@ -75,24 +87,24 @@ function EventosBotonesPaginaCrearUsuario() {
             contenido = ComponerContenidoAdvertencia(imagenError, tituloError, 'Selecciona la fecha de nacimiento');
             MostrarModal(contenido);
         } else {
-            ContenidoPaginaGuardando()
+            ContenidoPaginaGuardando($("#ContenedorContenidoPaginaCrearUsuario"))
             setTimeout(() => {
-                upsertArrayUsuario({
+                upsertArray({
                         Nombre: nombre,
                         ApellidoPaterno: apellidoPaterno,
                         ApellidoMaterno: apellidoMaterno,
                         FechaNacimiento: fechaNacimiento
                     }, InformacionUsuario).then(result => {
-                        ContenidoPaginaGuardado(true, 'Información agregada')
+                        ContenidoPaginaGuardado(true, 'Información agregada',$("#ContenedorContenidoPaginaCrearUsuario"))
                         setTimeout(() => {
                             NumeroTarjetaSeleccionada = 2
-                            CargarPagina(1);
+                            CargarPaginaCrearUsuario(1);
                         }, 1000);
                     })
                     .catch(error => {
-                        ContenidoPaginaGuardado(false, 'Error al agregar información')
+                        ContenidoPaginaGuardado(false, 'Error al agregar información',$("#ContenedorContenidoPaginaCrearUsuario"))
                         console.log(error)
-                        CargarPagina(1);
+                        CargarPaginaCrearUsuario(1);
                     });
             }, 1000);
 
@@ -101,7 +113,7 @@ function EventosBotonesPaginaCrearUsuario() {
     })
 
     $("#BotonInformacionContacto, #BotonEditarInformacionContacto").click(function (e) {
-        CargarPagina(3)
+        CargarPaginaCrearUsuario(3)
     })
 
     $("#BotonGuardarContactoCrearUsuario").click(function (e) {
@@ -120,29 +132,29 @@ function EventosBotonesPaginaCrearUsuario() {
         } else {
             var correo = $("#InputCorreoCrearUsuario").val().trim()
             var Telefono = LimpiarTelefono($("#TelefonoCrearUsuario").val().trim())
-            ContenidoPaginaGuardando()
+            ContenidoPaginaGuardando($("#ContenedorContenidoPaginaCrearUsuario"))
             setTimeout(() => {
-                upsertArrayUsuario({
+                upsertArray({
                         Correo: correo,
                         Telefono: Telefono
                     }, ContactoUsuario).then(result => {
-                        ContenidoPaginaGuardado(true, 'Información agregada')
+                        ContenidoPaginaGuardado(true, 'Información agregada',$("#ContenedorContenidoPaginaCrearUsuario"))
                         setTimeout(() => {
                             NumeroTarjetaSeleccionada = 3
-                            CargarPagina(1);
+                            CargarPaginaCrearUsuario(1);
                         }, 1000);
                     })
                     .catch(error => {
-                        ContenidoPaginaGuardado(false, 'Error al agregar información')
+                        ContenidoPaginaGuardado(false, 'Error al agregar información',$("#ContenedorContenidoPaginaCrearUsuario"))
                         console.log(error)
-                        CargarPagina(1);
+                        CargarPaginaCrearUsuario(1);
                     });
             }, 1000);
         }
     })
 
     $("#BotonInformacionUsuario, #BotonEditarInformacionCuenta").click(function (e) {
-        CargarPagina(4)
+        CargarPaginaCrearUsuario(4)
     })
 
     $("#BotonGuardarInformacionUsuarioCrearUsuario").click(function (e) {
@@ -168,22 +180,22 @@ function EventosBotonesPaginaCrearUsuario() {
             var usuario = $("#InputUsuarioCrearUsuario").val().trim()
             var password = $("#InputPasswordCrearUsuario").val().trim()
             var confirmarPassword = $("#InputConfirmarPasswordCrearUsuario").val().trim()
-            ContenidoPaginaGuardando()
+            ContenidoPaginaGuardando($("#ContenedorContenidoPaginaCrearUsuario"))
             setTimeout(() => {
-                upsertArrayUsuario({
+                upsertArray({
                         Usuario: usuario,
                         Password: password,
                         ConfirmarPassword: confirmarPassword
                     }, InformacionCuenta).then(result => {
-                        ContenidoPaginaGuardado(true, 'Información agregada')
+                        ContenidoPaginaGuardado(true, 'Información agregada',$("#ContenedorContenidoPaginaCrearUsuario"))
                         setTimeout(() => {
-                            CargarPagina(5);
+                            CargarPaginaCrearUsuario(5);
                         }, 1000);
                     })
                     .catch(error => {
-                        ContenidoPaginaGuardado(false, 'Error al agregar información')
+                        ContenidoPaginaGuardado(false, 'Error al agregar información',$("#ContenedorContenidoPaginaCrearUsuario"))
                         console.log(error)
-                        CargarPagina(1);
+                        CargarPaginaCrearUsuario(1);
                     });
             }, 1000);
         }
@@ -191,9 +203,9 @@ function EventosBotonesPaginaCrearUsuario() {
 
     $("#BotonGuardarUsuario").click(function (e) {
         var PIN = $("#InputPINCrearUsuario").val().trim()
-        var confirmaPIN =$("#InputConfirmarPINCrearUsuario").val().trim()
-        ContenidoPaginaGuardando()
-        upsertArrayUsuario({
+        var confirmaPIN = $("#InputConfirmarPINCrearUsuario").val().trim()
+        ContenidoPaginaGuardando($("#ContenedorContenidoPaginaCrearUsuario"))
+        upsertArray({
             PIN: PIN,
             ConfirmarPIN: confirmaPIN
         }, InformacionPIN)
@@ -208,14 +220,14 @@ function EventosBotonesPaginaCrearUsuario() {
                 console.log(response)
                 response = JSON.parse(response)
                 if (response == 'Este correo y/o teléfono y/o usuario ya está registrado') {
-                    ContenidoPaginaGuardado(false, response)
+                    ContenidoPaginaGuardado(false, response,$("#ContenedorContenidoPaginaCrearUsuario"))
                     setTimeout(() => {
-                        NumeroTarjetaSeleccionada=3
-                        CargarPagina(1);
-                      
+                        NumeroTarjetaSeleccionada = 3
+                        CargarPaginaCrearUsuario(1);
+
                     }, 2000);
                 } else {
-                    ContenidoPaginaGuardado(true, response)
+                    ContenidoPaginaGuardado(true, response,$("#ContenedorContenidoPaginaCrearUsuario"))
                     setTimeout(() => {
                         var token = btoa(Generar_Token());
                         localStorage.setItem('token_confirmacion', token);
@@ -227,22 +239,22 @@ function EventosBotonesPaginaCrearUsuario() {
             })
             .catch(error => {
                 NumeroTarjetaSeleccionada = 1
-                ContenidoPaginaGuardado(false, error)
+                ContenidoPaginaGuardado(false, error,$("#ContenedorContenidoPaginaCrearUsuario"))
                 console.log(error)
                 InformacionUsuario = []
                 ContactoUsuario = []
                 InformacionCuenta = []
                 InformacionPIN = []
-                CargarPagina(1);
+                CargarPaginaCrearUsuario(1);
             });
     })
 
     $("#BotonAtrasPaginaInformacionCrearUsuario, #BotonAtrasPaginaContactoCrearUsuario, #BotonAtrasPaginaCuentaCrearUsuario").click(function (e) {
-        CargarPagina(1)
+        CargarPaginaCrearUsuario(1)
     })
 }
 
-function ContenidoPagina1() {
+function ContenidoPaginaCrearUsuario_1() {
     $("#ColumnaTarjetaLogin").addClass('anchura-400-px').removeClass('anchura-80-por-ciento')
     var tarjeta1 = `
     <div class="anchura-100-por-ciento altura-70-px flex flex-center margin-10-px-auto borde-redondeado-5-px padding-5px-superior-inferior ${NumeroTarjetaSeleccionada==1?`tarjeta-hover box-shadow-1`:''}">
@@ -263,7 +275,7 @@ function ContenidoPagina1() {
                 </div>
             </div>
             <div class="anchura-90-px altura-100-por-ciento flex flex-center">
-                                ${InformacionUsuario.length==0?`<a class="boton altura-35-px padding-10px-lateral boton-importante flex flex-center font-09-rem  position-relative borde-redondeado-2-px" id="BotonInformacionBasica">
+                                ${InformacionUsuario.length==0?`<a class="boton altura-35-px padding-10px-lateral boton-importante flex flex-center font-09-rem  position-relative borde-redondeado-5-px" id="BotonInformacionBasica">
                                 <span>Agregar</span>
                                 </a>`:`
                                 <a class="boton altura-35-px anchura-35-px boton-importante borde-redondeado-50-por-ciento flex flex-center" id="BotonEditarInformacionBasica">
@@ -355,18 +367,13 @@ function ContenidoPagina1() {
     </div>
 `;
     $("#ContenedorContenidoPaginaCrearUsuario").html(`<div class="overflow-auto">
-                    <div class="anchura-100-por-ciento altura-50-px flex flex-center margin-15-px-auto">
-                        <div class="flex flex-left altura-100-por-ciento">
-                            <img src="../../images/logotipo/logotipo-gris-2023-v1.jpg" class="altura-80-por-ciento">
-                        </div>
-                    </div>
                     <div class="anchura-100-por-ciento-con-padding-5px-lateral font-11-rem font-family-Montserrat-Semi-Bold padding-5px-lateral altura-30-px flex flex-center margin-10-px-auto">
                         <span id="SpantituloCrearUsuario">Crear usuario</span>
                     </div>
                     <form class="overflow-auto margin-10-px-auto">
                     ${tarjeta1+tarjeta2+tarjeta3}
                     </form>
-                    <div class="anchura-100-por-ciento-con-padding-10px-lateral padding-10px-lateral margin-15-px-auto altura-50-px flex flex-center">
+                    <div class="anchura-100-por-ciento-con-padding-10px-lateral padding-10px-lateral margin-15px-auto-0px-auto altura-50-px flex flex-center">
                         <div class="anchura-50-por-ciento altura-100-por-ciento flex flex-left">
                             <a class="boton boton-solo-letra" href="login.php   ">Iniciar sesión</a>
                         </div>
@@ -377,17 +384,12 @@ function ContenidoPagina1() {
     EventosBotonesPaginaCrearUsuario()
 }
 
-function ContenidoPagina2() {
+function ContenidoPaginaCrearUsuario_2() {
     const hoy = new Date();
     hoy.setFullYear(hoy.getFullYear() - 18); // Restar 18 años
     const maxFecha = hoy.toISOString().split('T')[0];
     $("#ColumnaTarjetaLogin").removeClass('anchura-400-px').addClass('anchura-80-por-ciento')
     $("#ContenedorContenidoPaginaCrearUsuario").html(` <div class="overflow-auto">
-                    <div class="anchura-100-por-ciento altura-50-px flex flex-center margin-15-px-auto">
-                        <div class="flex flex-left altura-100-por-ciento">
-                            <img src="../../images/logotipo/logotipo-gris-2023-v1.jpg" class="altura-80-por-ciento">
-                        </div>
-                    </div>
                     <div class="anchura-100-por-ciento-con-padding-5px-lateral font-11-rem font-family-Montserrat-Semi-Bold padding-5px-lateral altura-30-px flex flex-center margin-10-px-auto">
                         <span>Información básica</span>
                     </div>
@@ -440,7 +442,7 @@ function ContenidoPagina2() {
                             </div>
                         </div>
                     </form>
-                    <div class="anchura-100-por-ciento-con-padding-10px-lateral padding-10px-lateral margin-15-px-auto altura-50-px flex flex-center">
+                    <div class="anchura-100-por-ciento-con-padding-10px-lateral padding-10px-lateral margin-15px-auto-0px-auto altura-50-px flex flex-center">
                         <div class="anchura-50-por-ciento altura-100-por-ciento flex flex-left">
                             <a class="boton boton-solo-letra" id="BotonAtrasPaginaInformacionCrearUsuario">Atrás</a>
                         </div>
@@ -454,14 +456,9 @@ function ContenidoPagina2() {
     EventosBotonesPaginaCrearUsuario()
 }
 
-function ContenidoPagina3() {
+function ContenidoPaginaCrearUsuario_3() {
     $("#ColumnaTarjetaLogin").removeClass('anchura-400-px').addClass('anchura-80-por-ciento')
     $("#ContenedorContenidoPaginaCrearUsuario").html(` <div class="overflow-auto">
-                    <div class="anchura-100-por-ciento altura-50-px flex flex-center margin-15-px-auto">
-                        <div class="flex flex-left altura-100-por-ciento">
-                            <img src="../../images/logotipo/logotipo-gris-2023-v1.jpg" class="altura-80-por-ciento">
-                        </div>
-                    </div>
                     <div class="anchura-100-por-ciento-con-padding-5px-lateral font-11-rem font-family-Montserrat-Semi-Bold padding-5px-lateral altura-30-px flex flex-center margin-10-px-auto">
                         <span>Información de contacto</span>
                     </div>
@@ -498,7 +495,7 @@ function ContenidoPagina3() {
 
                         </div>
                     </form>
-                    <div class="anchura-100-por-ciento-con-padding-10px-lateral padding-10px-lateral margin-15-px-auto altura-50-px flex flex-center">
+                    <div class="anchura-100-por-ciento-con-padding-10px-lateral padding-10px-lateral margin-15px-auto-0px-auto altura-50-px flex flex-center">
                         <div class="anchura-50-por-ciento altura-100-por-ciento flex flex-left">
                             <a class="boton boton-solo-letra" id="BotonAtrasPaginaContactoCrearUsuario">Atrás</a>
                         </div>
@@ -512,15 +509,10 @@ function ContenidoPagina3() {
     EventosBotonesPaginaCrearUsuario()
 }
 
-function ContenidoPagina4() {
+function ContenidoPaginaCrearUsuario_4() {
     console.log(InformacionCuenta)
     $("#ColumnaTarjetaLogin").removeClass('anchura-400-px').addClass('anchura-80-por-ciento')
     $("#ContenedorContenidoPaginaCrearUsuario").html(`<div class="overflow-auto">
-                    <div class="anchura-100-por-ciento altura-50-px flex flex-center margin-15-px-auto">
-                        <div class="flex flex-left altura-100-por-ciento">
-                            <img src="../../images/logotipo/logotipo-gris-2023-v1.jpg" class="altura-80-por-ciento">
-                        </div>
-                    </div>
                     <div class="anchura-100-por-ciento-con-padding-5px-lateral font-11-rem font-family-Montserrat-Semi-Bold padding-5px-lateral altura-30-px flex flex-center margin-10-px-auto">
                         <span>Información de usuario y contraseña</span>
                     </div>
@@ -600,7 +592,7 @@ function ContenidoPagina4() {
                             </div>
                         </div>
                     </form>
-                    <div class="anchura-100-por-ciento-con-padding-10px-lateral padding-10px-lateral margin-15-px-auto altura-50-px flex flex-center">
+                    <div class="anchura-100-por-ciento-con-padding-10px-lateral padding-10px-lateral margin-15px-auto-0px-auto altura-50-px flex flex-center">
                         <div class="anchura-50-por-ciento altura-100-por-ciento flex flex-left">
                             <a class="boton boton-solo-letra" id="BotonAtrasPaginaCuentaCrearUsuario">Atrás</a>
                         </div>
@@ -614,14 +606,9 @@ function ContenidoPagina4() {
     EventosBotonesPaginaCrearUsuario()
 }
 
-function ContenidoPagina5() {
+function ContenidoPaginaCrearUsuario_5() {
     $("#ColumnaTarjetaLogin").removeClass('anchura-80-por-ciento').addClass('anchura-400-px')
     $("#ContenedorContenidoPaginaCrearUsuario").html(`<div class="overflow-auto">
-                    <div class="anchura-100-por-ciento altura-50-px flex flex-center margin-15-px-auto">
-                        <div class="flex flex-left altura-100-por-ciento">
-                            <img src="../../images/logotipo/logotipo-gris-2023-v1.jpg" class="altura-80-por-ciento">
-                        </div>
-                    </div>
                     <div class="anchura-100-por-ciento-con-padding-5px-lateral font-11-rem font-family-Montserrat-Semi-Bold padding-5px-lateral altura-30-px flex flex-center margin-10-px-auto">
                         <span>Configura un PIN</span>
                     </div>
@@ -683,7 +670,7 @@ function ContenidoPagina5() {
                             </div>
                         </div>
                     </form>
-                    <div class="anchura-100-por-ciento-con-padding-10px-lateral padding-10px-lateral margin-15-px-auto altura-50-px flex flex-center">
+                    <div class="anchura-100-por-ciento-con-padding-10px-lateral padding-10px-lateral margin-15px-auto-0px-auto altura-50-px flex flex-center">
                         <div class="anchura-50-por-ciento altura-100-por-ciento flex flex-left">
                         </div>
                         <div class="anchura-50-por-ciento altura-100-por-ciento flex flex-right">
@@ -696,50 +683,7 @@ function ContenidoPagina5() {
     EventosBotonesPaginaCrearUsuario()
 }
 
-async function ContenidoPaginaGuardando() {
-    $("#ColumnaTarjetaLogin").addClass('anchura-400-px').removeClass('anchura-80-por-ciento')
-    $("#ContenedorContenidoPaginaCrearUsuario").html(`<div class="anchura-100-por-ciento flex flex-center margin-10-px-auto position-relative" style="height: 200px;">
-                        <div class="anchura-100-por-ciento altura-100-por-ciento flex flex-center position-absolute top-0 left-0 bg-color-white z-index-10000 container-loader">
-                            <div class="loader"></div>
-                        </div>
-                    </div>`)
-}
 
-function ContenidoPaginaGuardado(resultado, titulo) {
-    $("#ColumnaTarjetaLogin").addClass('anchura-400-px').removeClass('anchura-80-por-ciento')
-    $("#ContenedorContenidoPaginaCrearUsuario").html(`<div class="anchura-100-por-ciento flex flex-center margin-10-px-auto position-relative" >
-                        <img src=${resultado==true?`../../icons/windows/check.png`:`"../../icons/windows/eliminar.png"`} style="height:80px">
-                    </div>
-                    <div class="anchura-100-por-ciento altura-50-px flex flex-center" style="font-weight: 600;">
-                        <span>${titulo}</span>
-                    </div>`)
-}
-
-function upsertArrayUsuario(nuevoUsuario, array) {
-    return new Promise((resolve, reject) => {
-        try {
-            const index = array.findIndex(u => u.id === nuevoUsuario.id);
-
-            if (index !== -1) {
-                // Si ya existe, actualizar
-                array[index] = nuevoUsuario;
-                resolve({
-                    tipo: 'actualizado',
-                    usuario: nuevoUsuario
-                });
-            } else {
-                // Si no existe, insertar
-                array.push(nuevoUsuario);
-                resolve({
-                    tipo: 'insertado',
-                    usuario: nuevoUsuario
-                });
-            }
-        } catch (error) {
-            reject('Error al hacer upsert: ' + error);
-        }
-    });
-}
 
 
 function FuncionesInputCrearUsuario() {
@@ -926,8 +870,7 @@ function validarPIN(pin) {
     return true;
 }
 
-function Generar_Token()
-{
+function Generar_Token() {
     var array = new Uint8Array(16);
     window.crypto.getRandomValues(array);
     return array.join('');

@@ -33,3 +33,14 @@ function FormatearFechaCompleta($fecha) {
 
     return $formatter->format($timestamp);
 }
+
+function generarCodigoBarras($longitud = 12) {
+    $caracteres = '0123456789';  // Solo números
+    $codigoBarras = '';
+    
+    for ($i = 0; $i < $longitud; $i++) {
+        $codigoBarras .= $caracteres[rand(0, strlen($caracteres) - 1)];
+    }
+    
+    return $codigoBarras;
+}

@@ -13,7 +13,10 @@
 <link rel="stylesheet" href="../../css/main/botones.css">
 <link rel="stylesheet" href="../../css/main/contenedor.css">
 <link rel="stylesheet" href="../../css/main/modal.css">
+<link rel="stylesheet" href="../../css/main/select2.min.css">
+<link rel="stylesheet" href="../../css/main/switch.css">
 <script src="../../library/js/jquery-3.7.1.min.js"></script>
+<script src="../../library/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha512/0.9.0/sha512.js" integrity="sha512-2Jmsp8L71Jh1DGFX/ynlt7G1wXDrryCyTopc8IPtba992zPP8nEvYmWvbON6wXZeMMk5Uc17L8tTrBM2FtdA8w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="../../js/view/funciones-input.js"></script>
 <script src="../../js/view/modal.js"></script>

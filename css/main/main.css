@@ -20,6 +20,7 @@ body {
     overflow: auto;
     background-color: #f4f7fa;
     height: 100vh;
+    position: static;
 }
 
 .overflow-auto {

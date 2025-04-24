@@ -12,6 +12,25 @@ soloNumeros("#InputCodigoPostalNuevaSucursal")
 limitarCaracteres($("#InputTelefonoNuevaSucursal"), 10)
 soloNumeros("#InputTelefonoNuevaSucursal")
 
+
+$(document).ready(function(e)
+{
+    const $select = $("#SelectTipoSucursalNuevaSucursal");
+    $select.empty();
+    
+    // Agregar opciones fijas
+    $select.append(new Option('-- Selecciona un tipo--', ''));
+    $select.append(new Option('Sucursal', 'Sucursal'));
+    $select.append(new Option('Bodega', 'Bodega'));
+    
+    $select.select2({
+        placeholder: 'Buscar tipo...',
+        allowClear: true,
+        minimumResultsForSearch: Infinity
+    });
+    EventosSelect2()
+})
+
 $("#InputTelefonoNuevaSucursal").on('blur', function () {
     $(this).val(FormatearTelefono($(this).val()))
 });
@@ -77,7 +96,14 @@ $("#BotonGuardarInformacionNuevaSucursal").click(function (e) {
     if ($("#InputNombreNuevaSucursal").val().length == 0) {
         contenido = ComponerContenidoAdvertencia(imagenError, 'Verifica', 'Ingresa un nombre para la sucursal');
         MostrarModal(contenido);
-    } else if ($("#InputCalleNuevaSucursal").val().length == 0) {
+    } 
+    else if(!$("#SelectTipoSucursalNuevaSucursal").val())
+    {
+        contenido = ComponerContenidoAdvertencia(imagenError, 'Verifica', 'Selecciona un tipo de surcusal');
+        MostrarModal(contenido);
+    }
+    
+    else if ($("#InputCalleNuevaSucursal").val().length == 0) {
         contenido = ComponerContenidoAdvertencia(imagenError, 'Verifica', 'Ingresa la calle del domicilio de la sucursal');
         MostrarModal(contenido);
     }
@@ -117,8 +143,9 @@ $("#BotonGuardarInformacionNuevaSucursal").click(function (e) {
     else
     {
         MostrarModal(ComponerModalCargando('Guardando...', 'auto', '400px'), false)
-        var nombre, calle, noExterior, noInterior=0, CodigoPostal, Colonia, Municipio, Estado, Telefono
+        var nombre, tipo, calle, noExterior, noInterior=0, CodigoPostal, Colonia, Municipio, Estado, Telefono
         nombre=$("#InputNombreNuevaSucursal").val().trim()
+        tipo=$("#SelectTipoSucursalNuevaSucursal").val()
         calle=$("#InputCalleNuevaSucursal").val().trim()
         noExterior=$("#InputNumeroExteriorNuevaSucursal").val().trim()
         if($("#InputNumeroInteriorNuevaSucursal").val().length!=0)
@@ -134,6 +161,7 @@ $("#BotonGuardarInformacionNuevaSucursal").click(function (e) {
             accion: 'Nueva_Sucursal',
             data: {
                 'Nombre': nombre,
+                'Tipo_Sucursal':tipo,
                 'Calle': calle,
                 'Numero_Exterior':noExterior,
                 'Numero_Interior':noInterior,
@@ -147,35 +175,45 @@ $("#BotonGuardarInformacionNuevaSucursal").click(function (e) {
         
         ajaxConParametros(undefined, data)
         .then(response => {
-            response=JSON.parse(response)
-            if(response=='Sucursal registrada con éxito.')
-            {
-                contenido = ComponerContenidoAdvertencia('../../icons/windows/check.png', 'Listo', 'Sucursal registrada correctamente');
-                MostrarModal(contenido, false)
+            let res = JSON.parse(response);
+    
+            if (res.status === 'success') {
+                const contenido = ComponerContenidoAdvertencia(
+                    '../../icons/windows/check.png',
+                    'Listo',
+                    res.message
+                );
+                MostrarModal(contenido, false);
                 setTimeout(() => {
-                    CerrarModal()
-                    CerrarModalPadre()
-                    window.parent.InicializarPaginaSeleccionarSucursal()
+                    CerrarModal();
+                    CerrarModalPadre();
+                    window.parent.InicializarPaginaSeleccionarSucursal();
                 }, 1000);
-            }
-            else if(response=='Esta sucursal ya está registrada')
-            {
-                contenido = ComponerContenidoAdvertencia('../../icons/windows/exclamacion.png', 'Error', 'Esta sucursal ya está registrada');
-                console.log(response)
-                verificado = false
-                MostrarModal(contenido, false)
+            } else if (res.status === 'error') {
+                const contenido = ComponerContenidoAdvertencia(
+                    '../../icons/windows/exclamacion.png',
+                    'Error',
+                    res.message
+                );
+                console.log(res.message);
+                MostrarModal(contenido, false);
                 setTimeout(() => {
-                    CerrarModal()
+                    CerrarModal();
                 }, 1000);
             }
         })
         .catch(error => {
-            contenido = ComponerContenidoAdvertencia('../../icons/windows/eliminar.png', 'Error', 'Intenta más tarde');
-            console.log(error)
-            MostrarModal(contenido, false)
+            const contenido = ComponerContenidoAdvertencia(
+                '../../icons/windows/eliminar.png',
+                'Error',
+                'Intenta más tarde'
+            );
+            console.error(error);
+            MostrarModal(contenido, false);
             setTimeout(() => {
-                CerrarModal()
+                CerrarModal();
             }, 1000);
-        })
+        });
+    
     }
 })

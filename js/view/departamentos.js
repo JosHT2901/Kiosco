@@ -45,7 +45,7 @@ function InicializarPaginaDepartamentos() {
 }
 
 function ImprimirEstructuraPanelDepartamentos() {
-    $("#ContenedorContenidoDepartamentos").html(`<div class="anchura-100-por-ciento altura-40-px flex flex-center margin-10-px-auto bg-color-input borde-redondeado-5-px">
+    $("#ContenedorContenidoDepartamentos").html(`<div class="anchura-100-por-ciento altura-40-px flex flex-center margin-10-px-auto">
                         <div class="altura-100-por-ciento anchura-100-por-ciento flex flex-center">
                             <div class="altura-100-por-ciento anchura-100-por-ciento-menos-40-px flex flex-center">
                                     <div class=" anchura-100-por-ciento-con-padding-5px-lateral padding-5px-lateral altura-35-px flex flex-center">
@@ -91,7 +91,7 @@ function ImprimirTarjetasDepartamentos(objeto) {
         }
 
         const tarjeta = `
-            <div class=" anchura-100-por-ciento-con-borde-1px altura-50-px borde-redondeado-5-px tarjeta-3d box-shadow-1 margin-10-px-auto tarjeta-hover flex flex-left position-relative  border-1-px-e6e6e6" data-id="${id}" style="font-weight:600">
+            <div class=" anchura-100-por-ciento-con-borde-1px altura-50-px borde-redondeado-5-px tarjeta-3d  margin-10-px-auto tarjeta-hover flex flex-left position-relative  border-1-px-e6e6e6" data-id="${id}" style="font-weight:600">
                 <div class=" anchura-100-por-ciento-menos-20-px altura-100-por-ciento padding-10px-lateral flex flex-left">
                     <span class="texto-truncado">${nombre}</span>
                 </div>
@@ -104,18 +104,7 @@ function ImprimirTarjetasDepartamentos(objeto) {
     return tarjetas;
 }
 
-function ImprimirNoHayResultados(contenedor, texto) {
-    contenedor.html(`<div class="anchura-100-por-ciento altura-100-por-ciento flex flex-center">
-        <div class="overflow-auto">
-            <div class="anchura-100-por-ciento altura-150-px flex flex-center margin-10-px-auto">
-                <img src="../../icons/basic/astronauta.png" class="altura-100-por-ciento">
-            </div>
-            <div class="anchura-100-por-ciento altura-30-px flex flex-center margin-20-px-auto">
-                <span>${texto}</span>
-            </div>
-        </div>
-    </div>`)
-}
+
 
 function EventosPaginaDepartamentos(objeto) {
     $("#InputBuscarDepartamento").on("keyup", function () {
@@ -135,7 +124,7 @@ function EventosPaginaDepartamentos(objeto) {
     $('[name="BotonEliminarDepartamento"]').click(function (e) {
 
         var id = $(this).data('id')
-        MostrarModal(ComponerModalPregunta('Confirma', 'Esta accion no se puede deshacer', 'auto', '400px'), false);
+        MostrarModal(ComponerModalPregunta('Eliminar departamento', 'Esta accion no se puede deshacer', 'auto', '400px'), false);
         $('#BotonCancelarAccionModal').on('click', function (e) {
             CerrarModal()
         });
@@ -150,15 +139,15 @@ function EventosPaginaDepartamentos(objeto) {
                 .then(response => {
                     response = JSON.parse(response)
                     if (response.success) {
-                        if (response.mensaje == 'Departamento eliminado exitosamente.') {
-                            contenido = ComponerContenidoAdvertencia('../../icons/windows/check.png', 'Listo', 'Departamento eliminado correctamentes');
+                        if (response.message == 'Departamento eliminado exitosamente.') {
+                            contenido = ComponerContenidoAdvertencia('../../icons/windows/check.png', 'Listo', 'Departamento eliminado correctamente');
                             MostrarModal(contenido, false)
                             setTimeout(() => {
                                 InicializarPaginaDepartamentos()
                             }, 1000);
                         } else {
-                            contenido = ComponerContenidoAdvertencia('../../icons/windows/exclamacion.png', 'Error', response.mensaje);
-                            console.log(response.mensaje)
+                            contenido = ComponerContenidoAdvertencia('../../icons/windows/exclamacion.png', 'Error', response.message);
+                            console.log(response.message)
                             verificado = false
                             MostrarModal(contenido, false)
                             setTimeout(() => {
@@ -167,7 +156,7 @@ function EventosPaginaDepartamentos(objeto) {
                         }
                     } else {
                         contenido = ComponerContenidoAdvertencia('../../icons/windows/eliminar.png', 'Error', 'Intenta más tarde');
-                        console.log(error)
+                        console.log(response.error)
                         MostrarModal(contenido, false)
                         setTimeout(() => {
                             CerrarModal()
@@ -261,7 +250,7 @@ function EventosPaginaDepartamentos(objeto) {
                     EventoBotonGuardarInformarcionDepartamento(id)
                 } else {
                     contenido = ComponerContenidoAdvertencia('../../icons/windows/eliminar.png', 'Error', 'Intenta más tarde');
-                    console.log(response.mensaje)
+                    console.log(response.message)
                     MostrarModal(contenido, false)
                     setTimeout(() => {
                         CerrarModal()
@@ -288,11 +277,12 @@ function BuscarDepartamentos(valor, objeto) {
     if (resultadosFiltrados.length > 0) {
         $("#ContenedorTarjetasDepartamentos").html(ImprimirTarjetasDepartamentos(resultadosFiltrados))
             .removeClass('flex flex-center altura-100-por-ciento')
-
+            EventosPaginaDepartamentos(resultadosFiltrados)
     } else {
         ImprimirNoHayResultados($("#ContenedorTarjetasDepartamentos"), 'No hay resultados')
         $("#ContenedorTarjetasDepartamentos").addClass('flex flex-center altura-100-por-ciento')
     }
+    
 }
 
 function EventoBotonGuardarInformarcionDepartamento(id) {

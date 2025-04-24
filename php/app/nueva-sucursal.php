@@ -13,16 +13,32 @@
         <form class="overflow-auto margin-10-px-auto">
             <div class="overflow-auto contenedor-form">
                 <div class="anchura-100-por-ciento flex flex-center flex-wrap" style="max-height: 400px;">
-                    <div class="anchura-100-por-ciento-con-padding-5px-lateral padding-5px-lateral margin-10-px-auto">
+                    <div class="anchura-100-por-ciento-con-padding-5px-lateral padding-5px-lateral margin-10-px-auto contenedor-input-resizable-50-por-ciento-margin-30px">
                         <div class="altura-70-px anchura-100-por-ciento flex flex-center ">
                             <div class="altura-100-por-ciento anchura-100-por-ciento flex flex-center">
-                                <div class="altura-100-por-ciento anchura-100-por-ciento-menos-20-px margin-10-px-auto">
+                                <div class="altura-100-por-ciento anchura-100-por-ciento">
                                     <div class="anchura-100-por-ciento altura-30-px flex flex-left font-09-rem">
                                         <span class="label-input">Nombre de sucursal</span>
                                     </div>
                                     <div class="anchura-100-por-ciento altura-40-px">
                                         <div class="bg-color-input altura-100-por-ciento anchura-100-por-ciento borde-redondeado-5-px">
                                             <input type="text" class="input" id="InputNombreNuevaSucursal">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="anchura-100-por-ciento-con-padding-5px-lateral padding-5px-lateral margin-10-px-auto contenedor-input-resizable-50-por-ciento-margin-30px">
+                        <div class="altura-70-px anchura-100-por-ciento flex flex-center ">
+                            <div class="altura-100-por-ciento anchura-100-por-ciento flex flex-center">
+                                <div class="altura-100-por-ciento anchura-100-por-ciento">
+                                    <div class="anchura-100-por-ciento altura-30-px flex flex-left font-09-rem">
+                                        <span class="label-input">Tipo de sucursal</span>
+                                    </div>
+                                    <div class="anchura-100-por-ciento altura-40-px">
+                                        <div class="bg-color-input altura-100-por-ciento anchura-100-por-ciento borde-redondeado-5-px">
+                                            <select id="SelectTipoSucursalNuevaSucursal"></select>
                                         </div>
                                     </div>
                                 </div>

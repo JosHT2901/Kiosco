@@ -11,7 +11,6 @@ $(document).ready(function (e) {
 $(document).on("keydown", function (e) {
     if (e.key === "Enter") {
         e.preventDefault();
-        console.log("2323")
         AgregarFilaProducto()
     }
 });
@@ -52,14 +51,7 @@ function AjustarAnchuraContenedoresListaCompra() {
     });
 }
 
-function posicionarCursorFinal(input) {
-    setTimeout(() => {
-        if (input.setSelectionRange) {
-            const len = input.value.length;
-            input.setSelectionRange(len, len);
-        }
-    });
-}
+
 
 function CalcularPrecioCaja($totalPagado, $cajasCompradas, $inputPrecioPorCaja) {
     const total = parseFloat($totalPagado.val());
@@ -273,57 +265,8 @@ function AgregarFilaProducto() {
 }
 
 function EventosInputsListaCompra() {
-    $("input[name='InputListaCompra']")
-        .off("focus")
-        .on("focus", function () {
-            const $this = $(this);
-            if ($this.val().trim() === "") {
-                $this.val("0.00");
-            }
-            posicionarCursorFinal(this);
-        });
-
-    $("input[name='InputListaCompra']")
-        .off("keydown")
-        .on("keydown", function (e) {
-            const tecla = e.key;
-            const $this = $(this);
-            let valor = $this.val().replace(".", "");
-
-            if (!/^[0-9]$/.test(tecla) && tecla !== "Backspace" && tecla !== "Delete") {
-                return;
-            }
-
-            e.preventDefault(); // evita duplicación
-
-            if (tecla === "Backspace" || tecla === "Delete") {
-                valor = valor.slice(0, -1);
-            } else if (/^[0-9]$/.test(tecla)) {
-                if (valor.length >= 12) return;
-                valor += tecla;
-            }
-
-            // Remover ceros iniciales que no afecten los centavos
-            valor = valor.replace(/^0+(?=\d{3,})/, "");
-
-            while (valor.length < 3) {
-                valor = "0" + valor;
-            }
-
-            const parteEntera = valor.slice(0, -2);
-            const parteDecimal = valor.slice(-2);
-            const formateado = parteEntera + "." + parteDecimal;
-
-            $this.val(formateado);
-            posicionarCursorFinal(this);
-        });
-
-    $("input[name='InputListaCompra']")
-        .off("mousedown click")
-        .on("mousedown click", function () {
-            posicionarCursorFinal(this);
-        });
-
+    $("input[name='InputListaCompra']").on('input', soloNumerosYPunto);
+    InputDecimal($("input[name='InputListaCompra']"))
 
     $('[data-name="InputTotalPagadoListaCompra"], [data-name="InputCajasCompradasListaCompra"]').on('keyup', function () {
         var id = $(this).data('id');

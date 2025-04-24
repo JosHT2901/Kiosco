@@ -1,348 +1,121 @@
-<div class="scroll-horizontal">
-<table>
-    <thead>
-        <tr class="bg-color-input borde-redondeado-5-px-superior">
-            <th class="anchura-150-px text-align-center altura-40-px">Total pagado</th>
-            <th class="anchura-150-px text-align-center altura-40-px borde-tabla-lista-compra">Cajas compradas</th>
-            <th class="anchura-150-px text-align-center altura-40-px">Precio por caja</th>
-            <th class="anchura-150-px text-align-center altura-40-px borde-tabla-lista-compra">Unidades por caja</th>
-            <th class="anchura-150-px text-align-center altura-40-px">Precio por unidad</th>
-            <th class="anchura-200-px text-align-center altura-40-px borde-tabla-lista-compra">Precio sugerido (20%)</th>
-            <th class="anchura-100-px text-align-center altura-40-px">Es divisible</th>
-            <th class="anchura-150-px text-align-center altura-40-px borde-tabla-lista-compra">Piezas por unidad</th>
-            <th class="anchura-150-px text-align-center altura-40-px">Precio por pieza</th>
-            <th class="anchura-200-px text-align-center altura-40-px borde-tabla-lista-compra">Precio sug. por pieza</th>
-        </tr>
-    </thead>
-    <tbody>
-        
-    </tbody>
 
-</table>
-</div>
-
-
-
-
-<tr class=" margin-5-px-auto borde-redondeado-5-px-izquierdo tr-tabla-lista-compra">
-<td class="flex flex-center altura-40-px">
-    <div class="altura-40-px anchura-30-px flex flex-center">
-        <input type="checkbox" class="checkbox-round" id="CheckBoxViewPassword" />
-    </div>
-    <div class="altura-100-por-ciento padding-5px-lateral" style="width: calc(100% - 30px - 10px);">
-        <input type="text" class="input">
-    </div>
-</td>
-</tr>
-
-
-
-
-<div class="anchura-100-por-ciento-menos-20-px altura-100-por-ciento-menos-60-px overflow-auto padding-10px-lateral">
-            <div class="anchura-100-por-ciento altura-100-por-ciento-menos-20-px padding-10px-superior-inferior" style="min-width:600px">
-                <div class="tabla-contenedor altura-100-por-ciento">
-                    <div class="tabla-fija altura-100-por-ciento" style="background-color: #f6f6f6;">
-                        <div>
-                            <table>
-                                <thead>
-                                    <tr class="bg-color-input borde-redondeado-5-px-superior borde-tabla-lista-compra">
-                                        <th class="text-align-center altura-40-px">
-                                            <div class="flex flex-center altura-40-px">
-
-                                                <div class="altura-100-por-ciento flex flex-left" style="width: calc(100% - 150px);">
-                                                    <span>Productos</span>
+/*function ContenidoPaginaCrearProducto_5() {
+    $("#ColumnaTarjetaLogin").removeClass('anchura-400-px').addClass('anchura-80-por-ciento')
+    $("#ContenedorContenidoPaginaCrearProducto").html(`<div class="overflow-auto">
+                    <div class="anchura-100-por-ciento-con-padding-5px-lateral font-11-rem font-family-Montserrat-Semi-Bold padding-5px-lateral altura-30-px flex flex-center margin-10-px-auto">
+                        <span>Precios</span>
+                    </div>
+                    <form class="overflow-auto margin-10-px-auto">
+                        <div class="overflow-auto" style="max-height: 320px;">
+                            <div class="anchura-100-por-ciento flex flex-center flex-wrap">
+                                <div class="anchura-100-por-ciento-con-padding-5px-lateral padding-5px-lateral margin-15-px-auto contenedor-input-resizable-50-por-ciento-margin-30px">
+                                    <div class="anchura-100-por-ciento altura-30-px flex flex-left font-09-rem">
+                                        <span class="label-input">Precio costo</span>
+                                    </div>
+                                    <div class="anchura-100-por-ciento altura-40-px">
+                                        <div class="bg-color-input altura-100-por-ciento anchura-100-por-ciento borde-redondeado-5-px">
+                                            <div class="borde-redondeado-5-px bg-color-input flex flex-center altura-100-por-ciento anchura-100-por-ciento">
+                                                <div class="anchura-40-px altura-100-por-ciento flex flex-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000000" viewBox="0 0 256 256">
+                                                        <path d="M152,120H136V56h8a32,32,0,0,1,32,32,8,8,0,0,0,16,0,48.05,48.05,0,0,0-48-48h-8V24a8,8,0,0,0-16,0V40h-8a48,48,0,0,0,0,96h8v64H104a32,32,0,0,1-32-32,8,8,0,0,0-16,0,48.05,48.05,0,0,0,48,48h16v16a8,8,0,0,0,16,0V216h16a48,48,0,0,0,0-96Zm-40,0a32,32,0,0,1,0-64h8v64Zm40,80H136V136h16a32,32,0,0,1,0,64Z"></path>
+                                                    </svg>
                                                 </div>
-                                                <div class="altura-100-por-ciento flex flex-center" style="width: 150px;">
-                                                    <a class="boton altura-35-px padding-10px-lateral boton-importante flex flex-center min-width-110px position-relative borde-redondeado-5-px font-08-rem" id="BotonAgregarProductoListaCompra">
-                                                        <span>Agregar (Enter)</span>
-                                                    </a>
+                                                <div class="altura-100-por-ciento anchura-100-por-ciento-menos-40-px">
+                                                    <input type="text" class="input text-align-right" id="InputPrecioCostoNuevoProducto" name="InputPreciosNuevoProducto">
                                                 </div>
                                             </div>
-                                        </th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <div>
-                            <div style="max-height: 600px;">
-                            <table>
-                                <tbody class="overflow-auto" id="ContenedorBodyTablaFijaProductosListaCompra">
-
-                                </tbody>
-                            </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tabla-scroll flex flex-center" id="ContenedorTablaPreciosListaCompra">
-                        <div class="overflow-auto padding-20px">
-                            <div class="anchura-100-por-ciento altura-150-px flex flex-center margin-10-px-auto">
-                                <img src="../../icons/basic/astronauta.png" class="altura-100-por-ciento">
-                            </div>
-                            <div class=" anchura-100-por-ciento-menos-20-px altura-40-px flex flex-center font-12-rem bg-color-dbedf8 borde-redondeado-10-px padding-10px-lateral margin-10-px-auto" style="color: #03618d; font-weight:600">
-                                <span>Agrega un producto</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-
-         <div class="altura-100-por-ciento" style="width: 300px;">
-                        <div class="anchura-100-por-ciento altura-60-px flex flex-center" style="font-weight: 600;">
-                            <div class="altura-100-por-ciento flex flex-left" style="width: calc(100% - 150px);">
-                                <div class="altura-100-por-ciento anchura-100-por-ciento-con-padding-5px-lateral padding-5px-lateral flex flex-left">
-                                    <span>Productos</span>
-                                </div>
-                            </div>
-                            <div class="altura-100-por-ciento flex flex-center" style="width: 150px;">
-                                <a class="boton altura-35-px padding-10px-lateral boton-importante flex flex-center min-width-110px position-relative borde-redondeado-5-px font-08-rem" id="BotonAgregarProductoListaCompra">
-                                    <span>Agregar (Enter)</span>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="anchura-100-por-ciento" style="height: calc(100% - 60px);">
-                            <div class="anchura-100-por-ciento overflow-auto altura-100-por-ciento">
-                                <div class="anchura-100-por-ciento overflow-auto">
-                                    <div class="anchura-100-por-ciento altura-50-px flex flex-center margin-10-px-auto">
-                                        <div class="altura-40-px anchura-30-px flex flex-center">
-                                            <input type="checkbox" class="checkbox-round" id="CheckBoxViewPassword" />
-                                        </div>
-                                        <div class="altura-100-por-ciento padding-5px-lateral" style="width: calc(100% - 30px - 10px);">
-                                            <input type="text" class="input">
                                         </div>
                                     </div>
                                 </div>
+                                <div class="anchura-100-por-ciento-con-padding-5px-lateral padding-5px-lateral margin-15-px-auto contenedor-input-resizable-50-por-ciento-margin-30px">
+                                    <div class="anchura-100-por-ciento altura-30-px flex flex-left font-09-rem">
+                                        <span class="label-input">Precio costo</span>
+                                    </div>
+                                    <div class="anchura-100-por-ciento altura-40-px">
+                                        <div class="bg-color-input altura-100-por-ciento anchura-100-por-ciento borde-redondeado-5-px">
+                                            <div class="borde-redondeado-5-px bg-color-input flex flex-center altura-100-por-ciento anchura-100-por-ciento">
+                                                <div class="anchura-40-px altura-100-por-ciento flex flex-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000000" viewBox="0 0 256 256">
+                                                        <path d="M152,120H136V56h8a32,32,0,0,1,32,32,8,8,0,0,0,16,0,48.05,48.05,0,0,0-48-48h-8V24a8,8,0,0,0-16,0V40h-8a48,48,0,0,0,0,96h8v64H104a32,32,0,0,1-32-32,8,8,0,0,0-16,0,48.05,48.05,0,0,0,48,48h16v16a8,8,0,0,0,16,0V216h16a48,48,0,0,0,0-96Zm-40,0a32,32,0,0,1,0-64h8v64Zm40,80H136V136h16a32,32,0,0,1,0,64Z"></path>
+                                                    </svg>
+                                                </div>
+                                                <div class="altura-100-por-ciento anchura-100-por-ciento-menos-40-px">
+                                                    <input type="text" class="input text-align-right" id="InputPrecioCostoNuevoProducto" name="InputPreciosNuevoProducto">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="anchura-100-por-ciento-con-padding-5px-lateral padding-5px-lateral margin-15-px-auto contenedor-input-resizable-50-por-ciento-margin-30px">
+                                    <div class="anchura-100-por-ciento altura-30-px flex flex-left font-09-rem">
+                                        <span class="label-input">Precio menudeo (sugerido 20%)</span>
+                                    </div>
+                                    <div class="anchura-100-por-ciento altura-40-px">
+                                        <div class="bg-color-input altura-100-por-ciento anchura-100-por-ciento borde-redondeado-5-px">
+                                            <div class="borde-redondeado-5-px bg-color-input flex flex-center altura-100-por-ciento anchura-100-por-ciento">
+                                                <div class="anchura-40-px altura-100-por-ciento flex flex-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000000" viewBox="0 0 256 256">
+                                                        <path d="M152,120H136V56h8a32,32,0,0,1,32,32,8,8,0,0,0,16,0,48.05,48.05,0,0,0-48-48h-8V24a8,8,0,0,0-16,0V40h-8a48,48,0,0,0,0,96h8v64H104a32,32,0,0,1-32-32,8,8,0,0,0-16,0,48.05,48.05,0,0,0,48,48h16v16a8,8,0,0,0,16,0V216h16a48,48,0,0,0,0-96Zm-40,0a32,32,0,0,1,0-64h8v64Zm40,80H136V136h16a32,32,0,0,1,0,64Z"></path>
+                                                    </svg>
+                                                </div>
+                                                <div class="altura-100-por-ciento anchura-100-por-ciento-menos-40-px">
+                                                    <input type="text" class="input text-align-right" id="InputPrecioMenudeoNuevoProducto" name="InputPreciosNuevoProducto">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                ${InformacionPiezasProducto[0].medio!=null?`<div class="anchura-100-por-ciento-con-padding-5px-lateral padding-5px-lateral margin-15-px-auto contenedor-input-resizable-50-por-ciento-margin-30px">
+                                    <div class="anchura-100-por-ciento altura-30-px flex flex-left font-09-rem">
+                                        <span class="label-input">Precio medio mayoreo (sugerido 20%)</span>
+                                    </div>
+                                    <div class="anchura-100-por-ciento altura-40-px">
+                                        <div class="bg-color-input altura-100-por-ciento anchura-100-por-ciento borde-redondeado-5-px">
+                                            <div class="borde-redondeado-5-px bg-color-input flex flex-center altura-100-por-ciento anchura-100-por-ciento">
+                                                <div class="anchura-40-px altura-100-por-ciento flex flex-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000000" viewBox="0 0 256 256">
+                                                        <path d="M152,120H136V56h8a32,32,0,0,1,32,32,8,8,0,0,0,16,0,48.05,48.05,0,0,0-48-48h-8V24a8,8,0,0,0-16,0V40h-8a48,48,0,0,0,0,96h8v64H104a32,32,0,0,1-32-32,8,8,0,0,0-16,0,48.05,48.05,0,0,0,48,48h16v16a8,8,0,0,0,16,0V216h16a48,48,0,0,0,0-96Zm-40,0a32,32,0,0,1,0-64h8v64Zm40,80H136V136h16a32,32,0,0,1,0,64Z"></path>
+                                                    </svg>
+                                                </div>
+                                                <div class="altura-100-por-ciento anchura-100-por-ciento-menos-40-px">
+                                                    <input type="text" class="input text-align-right" id="InputPrecioMedioMayoreoNuevoProducto" name="InputPreciosNuevoProducto">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`:''}
+                                ${InformacionPiezasProducto[0].mayoreo!=null?`<div class="anchura-100-por-ciento-con-padding-5px-lateral padding-5px-lateral margin-15-px-auto contenedor-input-resizable-50-por-ciento-margin-30px">
+                                    <div class="anchura-100-por-ciento altura-30-px flex flex-left font-09-rem">
+                                        <span class="label-input">Precio mayoreo (sugerido 20%)</span>
+                                    </div>
+                                    <div class="anchura-100-por-ciento altura-40-px">
+                                        <div class="bg-color-input altura-100-por-ciento anchura-100-por-ciento borde-redondeado-5-px">
+                                            <div class="borde-redondeado-5-px bg-color-input flex flex-center altura-100-por-ciento anchura-100-por-ciento">
+                                                <div class="anchura-40-px altura-100-por-ciento flex flex-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000000" viewBox="0 0 256 256">
+                                                        <path d="M152,120H136V56h8a32,32,0,0,1,32,32,8,8,0,0,0,16,0,48.05,48.05,0,0,0-48-48h-8V24a8,8,0,0,0-16,0V40h-8a48,48,0,0,0,0,96h8v64H104a32,32,0,0,1-32-32,8,8,0,0,0-16,0,48.05,48.05,0,0,0,48,48h16v16a8,8,0,0,0,16,0V216h16a48,48,0,0,0,0-96Zm-40,0a32,32,0,0,1,0-64h8v64Zm40,80H136V136h16a32,32,0,0,1,0,64Z"></path>
+                                                    </svg>
+                                                </div>
+                                                <div class="altura-100-por-ciento anchura-100-por-ciento-menos-40-px">
+                                                    <input type="text" class="input text-align-right" id="InputPrecioMayoreoNuevoProducto" name="InputPreciosNuevoProducto">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`:''}
                             </div>
                         </div>
-                    </div>
-                    <div class="altura-100-por-ciento" style="width:calc(100% - 300px)"></div>
-
-
-
-
-                    var productos=[]
-$("#BotonAgregarProductoListaCompra").click(function(e)
-{
-    AgregarFila()
-})
-function AgregarFila()
-{
-    if($(".FilaPreciosTablaScrollListaCompra").length==0)
-    {
-    LimpiarContenedorPrecios()
-    ImprimirEstructuraContenedorPrecios()
-    }
-    $("#ContenedorBodyTablaFijaProductosListaCompra").append(`
-        <tr class=" margin-5-px-auto borde-redondeado-5-px-izquierdo tr-tabla-lista-compra" id="FilaProductosTablaFijaListaCompra">
-            <td class="flex flex-center altura-40-px">
-                <div class="altura-40-px anchura-30-px flex flex-center">
-                    <input type="checkbox" class="checkbox-round" id="CheckBoxViewPassword" />
-                </div>
-                <div class="altura-100-por-ciento padding-5px-lateral" style="width: calc(100% - 30px - 10px);">
-                    <input type="text" class="input">
-                </div>
-            </td>
-        </tr>`)
-    $("#ContenedorBodyTablaScrollPreciosListaCompra").append(ComponerFilaPrecios())
-}
-
-function LimpiarContenedorPrecios()
-{
-    $("#ContenedorTablaPreciosListaCompra").removeClass('flex flex-center').empty()
-}
-
-function ImprimirEstructuraContenedorPrecios()
-{
-    $("#ContenedorTablaPreciosListaCompra").html(`<div class="scroll-horizontal">
-        <table>
-            <thead>
-                <tr class="bg-color-input borde-redondeado-5-px-superior">
-                    <th class="anchura-150-px text-align-center altura-40-px">Total pagado</th>
-                    <th class="anchura-150-px text-align-center altura-40-px borde-tabla-lista-compra">Cajas compradas</th>
-                    <th class="anchura-150-px text-align-center altura-40-px">Precio por caja</th>
-                    <th class="anchura-150-px text-align-center altura-40-px borde-tabla-lista-compra">Unidades por caja</th>
-                    <th class="anchura-150-px text-align-center altura-40-px">Precio por unidad</th>
-                    <th class="anchura-200-px text-align-center altura-40-px borde-tabla-lista-compra">Precio sugerido (20%)</th>
-                    <th class="anchura-100-px text-align-center altura-40-px">Es divisible</th>
-                    <th class="anchura-150-px text-align-center altura-40-px borde-tabla-lista-compra">Piezas por unidad</th>
-                    <th class="anchura-150-px text-align-center altura-40-px">Precio por pieza</th>
-                    <th class="anchura-200-px text-align-center altura-40-px borde-tabla-lista-compra">Precio sug. por pieza</th>
-                </tr>
-            </thead>
-            <tbody id="ContenedorBodyTablaScrollPreciosListaCompra">
-            </tbody>
-        </table>
-    </div>`)
-}
-
-function ComponerFilaPrecios()
-{
-    return `<tr class=" margin-5-px-auto borde-redondeado-5-px-izquierdo tr-tabla-lista-compra FilaPreciosTablaScrollListaCompra">
-            <td>
-                <div class="flex flex-center altura-40-px">
-                    <!-- Ícono -->
-                    <div style="width: 30px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                        <img src="../../icons/basic/pesos-sing.png" style="height: 30px;">
-                    </div>
-                    <!-- Input -->
-                    <div class=" anchura-100-por-ciento-menos-30-px flex flex-center altura-100-por-ciento">
-                        <input type="text" class="input text-align-right">
-                    </div>
-                </div>
-            </td>
-            <td>
-                <div class="flex flex-center altura-40-px">
-                    <!-- Ícono -->
-                    <div style="width: 30px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                        <svg width="25" height="25" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M13.409 2.512a3.75 3.75 0 0 0-2.818 0l-7.498 3.04A1.75 1.75 0 0 0 2 7.174v9.652a1.75 1.75 0 0 0 1.093 1.622l7.498 3.04a3.75 3.75 0 0 0 2.818 0l7.498-3.04A1.75 1.75 0 0 0 22 16.826V7.175a1.75 1.75 0 0 0-1.093-1.622l-7.498-3.04Zm-7.36 5.472a.75.75 0 0 1 .967-.435L12 9.439l4.984-1.89a.75.75 0 1 1 .532 1.402L12.75 10.76v5.491a.75.75 0 0 1-1.5 0v-5.49L6.484 8.95a.75.75 0 0 1-.435-.967Z" />
-                        </svg>
-                    </div>
-                    <!-- Input -->
-                    <div class=" anchura-100-por-ciento-menos-30-px flex flex-center altura-100-por-ciento">
-                        <input type="text" class="input text-align-right">
-                    </div>
-                </div>
-            </td>
-            <td>
-                <div class="flex flex-center altura-40-px">
-                    <!-- Ícono -->
-                    <div style="width: 30px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                        <img src="../../icons/basic/pesos-sing.png" style="height: 30px;">
-                    </div>
-                    <!-- Input -->
-                    <div class=" anchura-100-por-ciento-menos-30-px flex flex-center altura-100-por-ciento">
-                        <input type="text" class="input text-align-right">
-                    </div>
-                </div>
-            </td>
-            <td>
-                <div class="flex flex-center altura-40-px">
-                    <!-- Ícono -->
-                    <div style="width: 30px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                        <svg width="25" height="25" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="m18.492 2.33 3.179 3.179a2.25 2.25 0 0 1 0 3.182l-2.584 2.584A2.25 2.25 0 0 1 21 13.5v5.25A2.25 2.25 0 0 1 18.75 21H5.25A2.25 2.25 0 0 1 3 18.75V5.25A2.25 2.25 0 0 1 5.25 3h5.25a2.25 2.25 0 0 1 2.225 1.915L15.31 2.33a2.25 2.25 0 0 1 3.182 0ZM4.5 18.75c0 .414.336.75.75.75l5.999-.001.001-6.75H4.5v6Zm8.249.749h6.001a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75h-6.001v6.75Zm-2.249-15H5.25a.75.75 0 0 0-.75.75v6h6.75v-6a.75.75 0 0 0-.75-.75Zm2.25 4.81v1.94h1.94l-1.94-1.94Zm3.62-5.918-3.178 3.178a.75.75 0 0 0 0 1.061l3.179 3.179a.75.75 0 0 0 1.06 0l3.18-3.179a.75.75 0 0 0 0-1.06l-3.18-3.18a.75.75 0 0 0-1.06 0Z" />
-                        </svg>
-                    </div>
-                    <!-- Input -->
-                    <div class=" anchura-100-por-ciento-menos-30-px flex flex-center altura-100-por-ciento">
-                        <input type="text" class="input text-align-right">
-                    </div>
-                </div>
-            </td>
-            <td>
-                <div class="flex flex-center altura-40-px">
-                    <!-- Ícono -->
-                    <div style="width: 30px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                        <img src="../../icons/basic/pesos-sing.png" style="height: 30px;">
-                    </div>
-                    <!-- Input -->
-                    <div class=" anchura-100-por-ciento-menos-30-px flex flex-center altura-100-por-ciento">
-                        <input type="text" class="input text-align-right">
-                    </div>
-                </div>
-            </td>
-            <td>
-                <div class="flex flex-center altura-40-px">
-                    <!-- Ícono -->
-                    <div style="width: 30px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                        <img src="../../icons/basic/pesos-sing.png" style="height: 30px;">
-                    </div>
-                    <!-- Input -->
-                    <div class=" anchura-100-por-ciento-menos-30-px flex flex-center altura-100-por-ciento">
-                        <div class="input">
-                            <span></span>
+                    </form>
+                    <div class="anchura-100-por-ciento-con-padding-10px-lateral padding-10px-lateral margin-15px-auto-0px-auto altura-50-px flex flex-center">
+                        <div class="anchura-50-por-ciento altura-100-por-ciento flex flex-left">
+                            <a class="boton boton-solo-letra" id="BotonAtrasPaginaInformacionCrearUsuario">Atrás</a>
+                        </div>
+                        <div class="anchura-50-por-ciento altura-100-por-ciento flex flex-right">
+                            <a class="boton altura-35-px padding-10px-lateral boton-importante flex flex-center font-09-rem min-width-110px position-relative borde-redondeado-5-px" id="BotonGuardarPreciosNuevoProducto">
+                                <span>Continuar</span>
+                            </a>
                         </div>
                     </div>
-                </div>
-            </td>
-            <td>
-                <div class="flex flex-center altura-40-px">
-                    <input type="checkbox" class="checkbox-round" id="CheckBoxViewPassword">
-                </div>
-            </td>
-            <td>
-                <div class="flex flex-center altura-40-px">
-                    <!-- Ícono -->
-                    <div style="width: 30px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                        <svg width="25" height="25" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20.25 11.993c.966 0 1.75.784 1.75 1.75v2.5a1.75 1.75 0 0 1-1.75 1.75h-2.5a1.75 1.75 0 0 1-1.75-1.75v-2.5c0-.966.784-1.75 1.75-1.75h2.5Zm-14 0c.966 0 1.75.784 1.75 1.75v2.5a1.75 1.75 0 0 1-1.75 1.75h-2.5A1.75 1.75 0 0 1 2 16.243v-2.5c0-.966.784-1.75 1.75-1.75h2.5Zm7 0c.966 0 1.75.784 1.75 1.75v2.5a1.75 1.75 0 0 1-1.75 1.75h-2.5A1.75 1.75 0 0 1 9 16.243v-2.5c0-.966.784-1.75 1.75-1.75h2.5Zm7 1.5h-2.5a.25.25 0 0 0-.25.25v2.5c0 .138.112.25.25.25h2.5a.25.25 0 0 0 .25-.25v-2.5a.25.25 0 0 0-.25-.25Zm-14 0h-2.5a.25.25 0 0 0-.25.25v2.5c0 .138.112.25.25.25h2.5a.25.25 0 0 0 .25-.25v-2.5a.25.25 0 0 0-.25-.25Zm7 0h-2.5a.25.25 0 0 0-.25.25v2.5c0 .138.112.25.25.25h2.5a.25.25 0 0 0 .25-.25v-2.5a.25.25 0 0 0-.25-.25Zm0-8.5c.966 0 1.75.784 1.75 1.75v2.5a1.75 1.75 0 0 1-1.75 1.75h-2.5A1.75 1.75 0 0 1 9 9.243v-2.5c0-.966.784-1.75 1.75-1.75h2.5Zm7 0c.966 0 1.75.784 1.75 1.75v2.5a1.75 1.75 0 0 1-1.75 1.75h-2.5A1.75 1.75 0 0 1 16 9.243v-2.5c0-.966.784-1.75 1.75-1.75h2.5Zm-14 0c.966 0 1.75.784 1.75 1.75v2.5a1.75 1.75 0 0 1-1.75 1.75h-2.5A1.75 1.75 0 0 1 2 9.243v-2.5A1.75 1.75 0 0 1 3.606 5l.144-.006h2.5Zm7 1.5h-2.5a.25.25 0 0 0-.25.25v2.5c0 .138.112.25.25.25h2.5a.25.25 0 0 0 .25-.25v-2.5a.25.25 0 0 0-.25-.25Zm7 0h-2.5a.25.25 0 0 0-.25.25v2.5c0 .138.112.25.25.25h2.5a.25.25 0 0 0 .25-.25v-2.5a.25.25 0 0 0-.25-.25Zm-14 0h-2.5l-.057.007a.25.25 0 0 0-.193.243v2.5c0 .138.112.25.25.25h2.5a.25.25 0 0 0 .25-.25v-2.5a.25.25 0 0 0-.25-.25Z" />
-                        </svg>
-                    </div>
-                    <!-- Input -->
-                    <div class=" anchura-100-por-ciento-menos-30-px flex flex-center altura-100-por-ciento">
-                        <input type="text" class="input text-align-right">
-                    </div>
-                </div>
-            </td>
-            <td>
-                <div class="flex flex-center altura-40-px">
-                    <!-- Ícono -->
-                    <div style="width: 30px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                        <img src="../../icons/basic/pesos-sing.png" style="height: 30px;">
-                    </div>
-                    <!-- Input -->
-                    <div class=" anchura-100-por-ciento-menos-30-px flex flex-center altura-100-por-ciento">
-                        <input type="text" class="input text-align-right">
-                    </div>
-                </div>
-            </td>
-            <td>
-                <div class="flex flex-center altura-40-px">
-                    <!-- Ícono -->
-                    <div style="width: 30px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                        <img src="../../icons/basic/pesos-sing.png" style="height: 30px;">
-                    </div>
-                    <!-- Input -->
-                    <div class=" anchura-100-por-ciento-menos-30-px flex flex-center altura-100-por-ciento">
-                        <div class="input">
-                            <span></span>
-                        </div>
-                    </div>
-                </div>
-            </td>
-        </tr>`
+                </div>`)
 }
-
-
-
-
- <div class="botones-ancho-fijo altura-40-px anchura-150-px flex flex-center padding-5px-lateral">
-                                                    <div style="width: 30px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                                        <img src="../../icons/basic/pesos-sing.png" style="height: 30px;">
-                                                    </div>
-                                                    <!-- Input -->
-                                                    <div class=" anchura-100-por-ciento-menos-30-px flex flex-center altura-100-por-ciento">
-                                                        <input type="text" class="input text-align-right">
-                                                    </div>
-                                                </div>
-                                                <div class="botones-ancho-fijo altura-40-px anchura-150-px flex flex-center borde-redondeado-5-px-superior padding-5px-lateral" style="background-color: #e6e6e6;">
-                                                    <span>Cajas compradas</span>
-                                                </div>
-                                                <div class="botones-ancho-fijo altura-40-px anchura-150-px flex flex-center padding-5px-lateral">
-                                                    <span>Precio por caja</span>
-                                                </div>
-                                                <div class="botones-ancho-fijo altura-40-px anchura-150-px flex flex-center borde-redondeado-5-px-superior padding-5px-lateral" style="background-color: #e6e6e6;">
-                                                    <span>Piezas por caja</span>
-                                                </div>
-                                                <div class="botones-ancho-fijo altura-40-px anchura-150-px flex flex-center padding-5px-lateral">
-                                                    <span>Precio por pieza</span>
-                                                </div>
-                                                <div class="botones-ancho-fijo altura-40-px anchura-200-px flex flex-center borde-redondeado-5-px-superior padding-5px-lateral" style="background-color: #e6e6e6;">
-                                                    <span>Precio sugerido (20%)</span>
-                                                </div>
-                                                <div class="botones-ancho-fijo altura-40-px anchura-100-px flex flex-center padding-5px-lateral">
-                                                    <span>¿Es divisible?</span>
-                                                </div>
-                                                <div class="botones-ancho-fijo altura-40-px anchura-150-px flex flex-center borde-redondeado-5-px-superior padding-5px-lateral" style="background-color: #e6e6e6;">
-                                                    <span>Unidades por pieza</span>
-                                                </div>
-                                                <div class="botones-ancho-fijo altura-40-px anchura-150-px flex flex-center padding-5px-lateral">
-                                                    <span>Precio por unidad</span>
-                                                </div>
-                                                <div class="botones-ancho-fijo altura-40-px anchura-200-px flex flex-center borde-redondeado-5-px-superior padding-5px-lateral" style="background-color: #e6e6e6;">
-                                                    <span>Precio sugerido (20%)</span>
-                                                </div>
+*/

@@ -8,7 +8,7 @@ if (empty($_SESSION) || !isset($_SESSION['Activo']) || $_SESSION['Activo'] !== t
 }
 ?>
 <!DOCTYPE html>
-<html class="font-family-Montserrat contenedor color-letra-2" style="min-width: 700px;">
+<html class="font-family-Montserrat contenedor color-letra-2" style="min-width: 550px;">
 
 <head>
     <?php
@@ -43,13 +43,18 @@ if (empty($_SESSION) || !isset($_SESSION['Activo']) || $_SESSION['Activo'] !== t
                 </div>
             </div>
         </div>
-        <div class="anchura-100-por-ciento altura-100-por-ciento-menos-60-px flex flex-center">
-           
+        <div class="anchura-100-por-ciento-menos-20-px padding-10px-lateral altura-100-por-ciento-menos-60-px overflow-auto">
+            <div class=" anchura-100-por-ciento-menos-20-px padding-10px-lateral altura-40-px flex flex-right margin-10-px-auto">
+                <a class="boton altura-35-px padding-10px-lateral boton-importante flex flex-center font-09-rem  position-relative borde-redondeado-5-px" id="BotonAgregarNuevaUnidad">
+                    <span>Agregar</span>
+                </a>
+            </div>
+            <div class="anchura-100-por-ciento altura-100-por-ciento-menos-60-px overflow-auto flex flex-center" id="ContenedorMedidasUtilizadas"></div>
         </div>
     </div>
 </body>
 <?php
 include_once "../include/footer.php"
 ?>
-
+<script src="../../js/view/unidades-medida.js"></script>
 </html>

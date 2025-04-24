@@ -10,9 +10,9 @@
 </head>
 
 <body>
-    <div class="anchura-100-por-ciento altura-100-vh flex-center flex min-height-650px">
+    <div class="anchura-100-por-ciento altura-100-vh flex-center flex min-height-650px" id="DivContenedorPaginaCrearUsuario">
         <div class="altura-100-por-ciento flex flex-center tarjeta-ajustable-450-100" id="ColumnaTarjetaLogin">
-            <div class="anchura-100-por-ciento padding-20px borde-redondeado-5-px box-shadow-1 tj-login bg-color-white position-relative" id="ContenedorPaginaCrearUsuario">
+            <div class="anchura-100-por-ciento padding-10px borde-redondeado-5-px box-shadow-1 tj-login bg-color-white position-relative" id="ContenedorPaginaCrearUsuario">
                 <div class="anchura-100-por-ciento altura-100-por-ciento" id="ContenedorContenidoPaginaCrearUsuario"></div>
             </div>
         </div>

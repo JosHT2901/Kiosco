@@ -44,6 +44,24 @@ switch ($_POST['accion']) {
     case 'Editar_nombre_departamento':
         Editar_nombre_departamento($_POST['data']);
         break;
+    case 'Agregar_nueva_unidad_medida':
+        Agregar_nueva_unidad_medida($_POST['data']);
+        break;
+    case 'Obtener_Unidades_Medida':
+        Obtener_Unidades_Medida();
+        break;
+    case 'Eliminar_Unidad_Medida':
+        Eliminar_Unidad_Medida($_POST['data']);
+        break;
+    case 'Generar_Codigo_Barras':
+        Generar_Codigo_Barras();
+        break;
+    case 'Crear_Nuevo_Producto':
+        Crear_Nuevo_Producto($_POST['data']);
+        break;
+    case 'Obtener_Productos':
+        Obtener_Productos();
+        break;
     default:
         # code...
         break;

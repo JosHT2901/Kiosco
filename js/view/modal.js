@@ -1,9 +1,19 @@
+let permitirCerrarModal = true;
 function MostrarModal(contenido, botonCerrar = true) {
+  permitirCerrarModal = botonCerrar;
   $('html').addClass('no-scroll');
   $("#TarjetaModal").css('height', '').css('width', '');
   $("#ContenedorContenidoModal").html(contenido)
   $('#modal-advertencia').fadeIn(200);
   $("#TarjetaModal").addClass('anchura-400-px')
+  if (window.self !== window.top) {
+    // Estamos dentro de un iframe
+    $("#ContenedorModal").removeClass('min-height-650px');
+  }
+  else
+  {
+    $("#ContenedorModal").addClass('min-height-650px');
+  }
   if (botonCerrar) {
     $("#ContenedorBotonCerrarModal").html(`<a class="boton altura-35-px anchura-35-px tarjeta-hover borde-redondeado-50-por-ciento flex flex-center" id="modal-cerrar">
                     <svg width="20" height="20" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -30,14 +40,12 @@ function MostrarModal(contenido, botonCerrar = true) {
 }
 
 $(document).ready(function () {
-  // También cerrar al hacer clic fuera del contenido del modal
   $('#modal-advertencia, #ContenedorModal').click(function (e) {
-    if (e.target === this) {
+    if (e.target === this && permitirCerrarModal) {
       $('html').removeClass('no-scroll');
       $("#modal-advertencia").fadeOut(200);
     }
   });
-
 });
 
 

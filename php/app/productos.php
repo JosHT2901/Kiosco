@@ -1,10 +1,11 @@
 <?php
 session_start();
+require_once "../include/pagina-protegida.php";
 // Verificar si la sesión NO está activa o NO definida
 if (empty($_SESSION) || !isset($_SESSION['Activo']) || $_SESSION['Activo'] !== true) {
     // Redirige al login si no hay sesión válida
-    header("Location: login.php");
-    exit;
+    /*header("Location: login.php");
+    exit;*/
 }
 ?>
 <!DOCTYPE html>
@@ -23,10 +24,10 @@ if (empty($_SESSION) || !isset($_SESSION['Activo']) || $_SESSION['Activo'] !== t
     include_once "../include/menu.php";
     ?>
     <div class=" anchura-100-por-ciento-con-padding-5px-lateral padding-5px-lateral altura-100-por-ciento-menos-60-px min-height-500px overflow-auto bg-color-white">
-        <div class="anchura-100-por-ciento margin-10-px-auto overflow-auto contenedor">
+        <div class="anchura-100-por-ciento margin-10-px-auto overflow-auto contenedor" id="ContenedorBotonesPaginaProductos">
             <div class="contenedor-botones-ancho-fijo">
 
-                <a class="tarjeta-botones-opciones tarjeta-hover boton botones-ancho-fijo ">
+                <a class="tarjeta-botones-opciones tarjeta-hover boton botones-ancho-fijo " id="BotonAgregarNuevoProducto">
                     <div class="anchura-100-por-ciento altura-60-px flex flex-center">
                         <img src="../../icons/basic/mas.png" class="anchura-40-px">
                     </div>
@@ -50,12 +51,20 @@ if (empty($_SESSION) || !isset($_SESSION['Activo']) || $_SESSION['Activo'] !== t
                         <span>Piezas</span>
                     </div>
                 </a>
-                <a class="tarjeta-botones-opciones tarjeta-hover boton botones-ancho-fijo ">
+                <a class="tarjeta-botones-opciones tarjeta-hover boton botones-ancho-fijo" href="unidades-de-medida.php">
                     <div class="anchura-100-por-ciento altura-60-px flex flex-center">
                         <img src="../../icons/windows/medida.png" class="anchura-40-px">
                     </div>
                     <div class="anchura-100-por-ciento altura-30-px flex flex-center font-08-rem" style="font-weight: 600;">
                         <span>Unidades</span>
+                    </div>
+                </a>
+                <a class="tarjeta-botones-opciones tarjeta-hover boton botones-ancho-fijo" href="departamentos.php">
+                    <div class="anchura-100-por-ciento altura-60-px flex flex-center">
+                        <img src="../../icons/windows/moneda.png" class="anchura-40-px">
+                    </div>
+                    <div class="anchura-100-por-ciento altura-30-px flex flex-center font-08-rem" style="font-weight: 600;">
+                        <span>Precios</span>
                     </div>
                 </a>
                 <a class="tarjeta-botones-opciones tarjeta-hover boton botones-ancho-fijo ">
@@ -92,7 +101,7 @@ if (empty($_SESSION) || !isset($_SESSION['Activo']) || $_SESSION['Activo'] !== t
                 </a>
             </div>
         </div>
-        <div class="anchura-100-por-ciento overflow-auto" style="height: calc(100% - 143px);">
+        <div class="anchura-100-por-ciento overflow-auto" id="ContenedorTablaPaginaProductos">
             <div class="anchura-100-por-ciento altura-50-px margin-5-px-auto borde-redondeado-5-px bg-color-input flex flex-center">
                 <div class="altura-100-por-ciento anchura-200-px flex flex-center">
                     <a class="boton boton-solo-icono anchura-40-px altura-40-px tarjeta-hover borde-redondeado-50-px flex flex-center margin-0px-5px">
@@ -187,7 +196,7 @@ if (empty($_SESSION) || !isset($_SESSION['Activo']) || $_SESSION['Activo'] !== t
                             </div>
                         </div>
                     </div>
-                    <div class="anchura-100-por-ciento flex flex-center" style="height: calc(100% - 80px);">
+                    <div class="anchura-100-por-ciento flex flex-center" style="height: calc(100% - 65px);">
                         <div class="altura-100-por-ciento padding-5px-lateral" style="width: calc(300px - 10px);">
                             <div class="anchura-100-por-ciento altura-100-por-ciento overflow-auto scroll-invisible">
                                 <div class="anchura-100-por-ciento overflow-auto ">

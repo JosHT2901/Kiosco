@@ -375,7 +375,7 @@ function ContenidoPaginaCrearUsuario_1() {
                     </form>
                     <div class="anchura-100-por-ciento-con-padding-10px-lateral padding-10px-lateral margin-15px-auto-0px-auto altura-50-px flex flex-center">
                         <div class="anchura-50-por-ciento altura-100-por-ciento flex flex-left">
-                            <a class="boton boton-solo-letra" href="login.php   ">Iniciar sesión</a>
+                            <a class="boton boton-solo-letra" href="login.php">Iniciar sesión</a>
                         </div>
                         <div class="anchura-50-por-ciento altura-100-por-ciento flex flex-right">
                         </div>

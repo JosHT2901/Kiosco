@@ -32,8 +32,8 @@ async function InicializarPaginaSeleccionarSucursal() {
         var sucursales = await Obtener_Sucursales();
         sucursales = JSON.parse(sucursales)
         ImprimirEstructuraPaginaSeleccionarSucursal(sucursales)
-        if (sucursales != 'No hay resultados') {
-            tarjetas = await ImprimirTarjetas(sucursales)
+        if (sucursales.success) {
+            tarjetas = await ImprimirTarjetas(sucursales.data)
             $("#ContenedorTarjetasSucursal").html(tarjetas)
             EventoBuscarSucursal(sucursales)
             EventoCheckSeleccionarSucursal()
@@ -51,7 +51,7 @@ async function ImprimirTarjetas(objeto) {
     var tarjetas = []
     $.each(objeto, function (index, sucursal) {
         tarjetas.push(`<label>
-                            <div class=" anchura-100-por-ciento-con-borde-1px altura-60-px flex flex-center tarjeta-3d borde-redondeado-10-px margin-10-px-auto" style="border: 1px solid #f1f1f1;">
+                            <div class=" anchura-100-por-ciento-con-borde-1px altura-60-px flex flex-center tarjeta-hover borde-redondeado-10-px margin-10-px-auto" style="border: 1px solid #f1f1f1;">
                                 <div class="anchura-60-px altura-60-px flex flex-center">
                                     <input type="radio" name="InputRadioSelectSucursal" class="checkbox-round" data-id="${sucursal.ID}" data-nombre="${sucursal.Nombre}" ${seleccion==sucursal.ID?'checked':''} />
                                 </div>
@@ -65,15 +65,14 @@ async function ImprimirTarjetas(objeto) {
 
     })
     return tarjetas
-    tarjetas = []
 }
 
 async function ImprimirEstructuraPaginaSeleccionarSucursal(objeto) {
     var contenido
-    if (objeto == 'No hay resultados') {
+    if (!objeto.success) {
         contenido = ` <div class="anchura-100-por-ciento">
                         <div class="anchura-100-por-ciento altura-150-px flex flex-center">
-                            <img src="../../icons/color bold/lupa.png" class=" altura-80-por-ciento">
+                            <img src="../../icons/basic/lupa.png" class=" altura-80-por-ciento">
                         </div>
                         <div class="anchura-100-por-ciento altura-30-px margin-10-px-auto flex flex-center color-letra-subtitulo font-11-rem">
                             <span>No se encontraron sucursales</span>
@@ -121,7 +120,7 @@ function EventoBuscarSucursal(objeto) {
             tarjetas = `<div class="anchura-100-por-ciento altura-100-por-ciento flex flex-center" style="min-height:300px">
                         <div>
                             <div class="anchura-100-por-ciento altura-150-px flex flex-center">
-                                <img src="../../icons/color bold/lupa.png" class=" altura-80-por-ciento">
+                                <img src="../../icons/basic/lupa.png" class=" altura-80-por-ciento">
                             </div>
                             <div class="anchura-100-por-ciento altura-30-px margin-10-px-auto flex flex-center color-letra-subtitulo font-11-rem">
                                 <span>No se encontraron sucursales</span>
@@ -151,10 +150,10 @@ function EventoCheckSeleccionarSucursal() {
         ajaxConParametros(undefined, data)
             .then(response => {
                 response=JSON.parse(response)
-                if (response == 'Información guardada') {
+                if (response.success) {
                     window.location.href = "inicio.php";
-                } else if (response == 'Datos incompletos') {
-                    contenido = ComponerContenidoAdvertencia('../../icons/windows/eliminar.png', 'Error', 'Intenta más tarde');
+                } else if (!response.success) {
+                    contenido = ComponerContenidoAdvertencia('../../icons/windows/eliminar.png', 'Error', response.message);
                     console.log(error)
                     MostrarModal(contenido, false)
                     setTimeout(() => {

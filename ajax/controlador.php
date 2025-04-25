@@ -62,6 +62,24 @@ switch ($_POST['accion']) {
     case 'Obtener_Productos':
         Obtener_Productos();
         break;
+    case 'Cerrar_sesion':
+        Cerrar_sesion();
+        break;
+    case 'Obtener_Sucursales_Con_Sucursal_Actual':
+        Obtener_Sucursales_Con_Sucursal_Actual();
+        break;
+    case 'Cambiar_sucursal':
+        Cambiar_sucursal($_POST['data']);
+        break;
+    case 'Obtener_Imagen_Usuario':
+        Obtener_Imagen_Usuario();
+        break;
+    case 'Guardar_Imagen_Usuario':
+        Guardar_Imagen_Usuario($_POST['data']);
+        break;
+    case 'Eliminar_Imagen_Usuario':
+        Eliminar_Imagen_Usuario();
+        break;
     default:
         # code...
         break;

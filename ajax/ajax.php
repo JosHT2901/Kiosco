@@ -126,59 +126,96 @@ function Verificar_codigo_solo_uso($data)
     }
 }
 
-
 function Iniciar_sesion($data)
 {
     try {
         if (empty($data['Usuario'])) {
-            $respuesta = 'Ingresa el usuario';
-        } else if (empty($data['Password'])) {
-            $respuesta = 'Ingresa la contraseña o el PIN';
-        } else {
-            DestruirSesiones();
-
-            $usuario = $data['Usuario'];
-            $password = $data['Password'];
-
-            $sql = "SELECT * FROM Usuarios 
-                    WHERE (Usuario = :usuario OR Correo = :usuario OR Telefono = :usuario) 
-                    AND Habilitado = 1";
-
-            $query = Conexion(true)->prepare($sql);
-            $query->bindParam(':usuario', $usuario);
-            $query->execute();
-
-            if ($query->rowCount() > 0) {
-                $user = $query->fetch(PDO::FETCH_ASSOC);
-
-                // Verificamos si la contraseña proporcionada coincide con la almacenada
-                if (
-                    password_verify($password, $user['Password']) ||
-                    password_verify($password, $user['PIN'])
-                ) {
-                    session_start();
-                    $_SESSION['Nombre'] = $user['Nombre'];
-                    $_SESSION['Apellido_Paterno'] = $user['Apellido_Paterno'];
-                    $_SESSION['Apellido_Materno'] = $user['Apellido_Materno'];
-                    $_SESSION['Correo'] = $user['Correo'];
-                    $_SESSION['Telefono'] = $user['Telefono'];
-                    $_SESSION['Usuario'] = $user['Usuario'];
-                    $_SESSION['Activo'] = false;
-
-                    $respuesta = "Inicio correcto";
-                } else {
-                    $respuesta = "Contraseña o PIN incorrecto.";
-                }
-            } else {
-                $respuesta = "Este usuario no está registrado o está deshabilitado.";
-            }
+            echo json_encode([
+                'success' => false,
+                'message' => 'Ingresa el usuario'
+            ]);
+            return;
         }
 
-        echo json_encode($respuesta);
+        if (empty($data['Password'])) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Ingresa la contraseña o el PIN'
+            ]);
+            return;
+        }
+
+        DestruirSesiones();
+
+        $usuario = $data['Usuario'];
+        $password = $data['Password'];
+
+        $sql = "SELECT * FROM Usuarios 
+                WHERE (Usuario = :usuario OR Correo = :usuario OR Telefono = :usuario) 
+                AND Habilitado = 1";
+
+        $query = Conexion(true)->prepare($sql);
+        $query->bindParam(':usuario', $usuario);
+        $query->execute();
+
+        if ($query->rowCount() > 0) {
+            $user = $query->fetch(PDO::FETCH_ASSOC);
+
+            if (
+                password_verify($password, $user['Password']) ||
+                password_verify($password, $user['PIN'])
+            ) {
+                session_start();
+                $_SESSION['Nombre'] = $user['Nombre'];
+                $_SESSION['Apellido_Paterno'] = $user['Apellido_Paterno'];
+                $_SESSION['Apellido_Materno'] = $user['Apellido_Materno'];
+                $_SESSION['Correo'] = $user['Correo'];
+                $_SESSION['Telefono'] = $user['Telefono'];
+                $_SESSION['Usuario'] = $user['Usuario'];
+                $_SESSION['ID_Usuario'] = $user['ID'];
+                $_SESSION['Imagen'] = $user['Imagen_Usuario'];
+
+                // CONSULTAR SI TIENE PERMISOS
+                $permisoQuery = Conexion(true)->prepare("SELECT COUNT(*) as Total FROM Permisos WHERE Usuario = :id_usuario");
+                $permisoQuery->bindParam(':id_usuario', $user['ID']);
+                $permisoQuery->execute();
+                $permisoData = $permisoQuery->fetch(PDO::FETCH_ASSOC);
+                $tienePermisos = ($permisoData['Total'] > 0);
+                $_SESSION['Activo'] = ($permisoData['Total'] > 0) ? false : true;
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Inicio de sesión exitoso',
+                    'tienePermisos' => $tienePermisos
+                ]);
+                return;
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Contraseña o PIN incorrecto.'
+                ]);
+                return;
+            }
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Este usuario no está registrado o está deshabilitado.'
+            ]);
+            return;
+        }
     } catch (PDOException $e) {
-        echo json_encode(['error' => $e->getMessage()]);
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error de base de datos.',
+            'error' => $e->getMessage()
+        ]);
     } catch (Exception $e) {
-        echo json_encode(['error' => 'Excepción capturada: ' . $e->getMessage()]);
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error inesperado.',
+            'error' => $e->getMessage()
+        ]);
     }
 }
 
@@ -265,7 +302,6 @@ function Nueva_Sucursal($data)
     }
 }
 
-
 function Obtener_Sucursales()
 {
     try {
@@ -274,40 +310,82 @@ function Obtener_Sucursales()
         if (!$conexion) {
             throw new Exception("No se pudo conectar a la base de datos.");
         }
+
         $sql = "SELECT * FROM Sucursales";
         $query = $conexion->prepare($sql);
         $query->execute();
         $rows = $query->fetchAll(PDO::FETCH_ASSOC);
+
         if (empty($rows)) {
-            echo json_encode('No hay resultados');
+            echo json_encode([
+                'success' => false,
+                'message' => 'No hay resultados'
+            ]);
         } else {
-            echo json_encode($rows);
+            echo json_encode([
+                'success' => true,
+                'message' => 'Sucursales obtenidas exitosamente',
+                'data' => $rows
+            ]);
         }
     } catch (PDOException $e) {
-        // Puedes redirigir o mostrar un error
-        echo "Error en la base de datos: " . $e->getMessage();
-        exit;
+        // Manejo de error de base de datos
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error en la base de datos.',
+            'error' => $e->getMessage()
+        ]);
+    } catch (Exception $e) {
+        // Manejo de errores generales
+        echo json_encode([
+            'success' => false,
+            'message' => 'Ocurrió un error inesperado.',
+            'error' => $e->getMessage()
+        ]);
     }
 }
 
 function Seleccionar_sucursal($data)
 {
     try {
+        // Iniciar sesión si no está iniciada
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
+
+        // Verificar si los datos están completos
         if (isset($data['ID']) && isset($data['Nombre'])) {
+            // Guardar la información en la sesión
             $_SESSION['Activo'] = true;
             $_SESSION['ID_Sucursal'] = $data['ID'];
             $_SESSION['Nombre_Sucursal'] = $data['Nombre'];
-            echo json_encode('Información guardada');
+
+            // Respuesta de éxito
+            echo json_encode([
+                'success' => true,
+                'message' => 'Información guardada correctamente'
+            ]);
         } else {
-            echo json_encode('Datos incompletos');
+            // Respuesta cuando faltan datos
+            echo json_encode([
+                'success' => false,
+                'message' => 'Datos incompletos'
+            ]);
         }
     } catch (PDOException $e) {
-        // Puedes redirigir o mostrar un error
-        echo "Error en la base de datos: " . $e->getMessage();
-        exit;
+        // Manejo de error de base de datos
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error en la base de datos.',
+            'error' => $e->getMessage()
+        ]);
+    } catch (Exception $e) {
+        // Manejo de errores generales
+        echo json_encode([
+            'success' => false,
+            'message' => 'Ocurrió un error inesperado.',
+            'error' => $e->getMessage()
+        ]);
     }
 }
 
@@ -799,7 +877,344 @@ function Crear_Nuevo_Producto($datosProducto)
     }
 }
 
-function Obtener_Productos()
+function Obtener_Productos() {}
+
+function Cerrar_sesion()
 {
-    
+    try {
+        // Iniciar sesión si no está iniciada
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Verificar si la sesión realmente existe
+        if (!isset($_SESSION)) {
+            throw new Exception("No hay sesión activa.");
+        }
+
+        // Limpiar variables de sesión
+        $_SESSION = [];
+
+        // Eliminar cookie de sesión
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
+
+        // Destruir sesión
+        if (!session_destroy()) {
+            throw new Exception("No se pudo destruir la sesión.");
+        }
+
+        // Devolver respuesta exitosa
+        echo json_encode([
+            'success' => true,
+            'message' => 'Sesión cerrada correctamente'
+        ]);
+    } catch (Exception $e) {
+        // Devolver error
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error al cerrar sesión',
+            'error' => $e->getMessage()
+        ]);
+    }
+
+    exit;
+}
+
+function Obtener_Sucursales_Con_Sucursal_Actual()
+{
+    try {
+        // Iniciar sesión si no está iniciada
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $conexion = Conexion(true); // Conexión a la base de datos
+
+        if (!$conexion) {
+            throw new Exception("No se pudo conectar a la base de datos.");
+        }
+
+        // Obtener ID de la sucursal actual desde la sesión
+        $idSucursalActual = $_SESSION['ID_Sucursal'] ?? null;
+
+        if ($idSucursalActual) {
+            $sql = "SELECT * FROM Sucursales WHERE ID != :idSucursalActual";
+            $query = $conexion->prepare($sql);
+            $query->bindParam(':idSucursalActual', $idSucursalActual, PDO::PARAM_INT);
+        } else {
+            // Si no hay una sucursal activa, simplemente traer todas
+            $sql = "SELECT * FROM Sucursales";
+            $query = $conexion->prepare($sql);
+        }
+
+        $query->execute();
+        $rows = $query->fetchAll(PDO::FETCH_ASSOC);
+        if (empty($rows)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'No hay otras sucursales disponibles',
+            ]);
+        } else {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Sucursales obtenidas exitosamente',
+                'data' => $rows
+            ]);
+        }
+    } catch (PDOException $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error en la base de datos.',
+            'error' => $e->getMessage()
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Ocurrió un error inesperado.',
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+
+function Cambiar_sucursal($data)
+{
+    try {
+        // Iniciar sesión si aún no está iniciada
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Validar que se reciban los datos necesarios
+        if (!isset($data['ID']) || !isset($data['Nombre'])) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Faltan datos obligatorios (ID o Nombre de la sucursal).'
+            ]);
+            return;
+        }
+
+        // Actualizar variables de sesión
+        $_SESSION['ID_Sucursal'] = $data['ID'];
+        $_SESSION['Nombre_Sucursal'] = $data['Nombre'];
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Sucursal cambiada exitosamente.'
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error al cambiar de sucursal.',
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+
+function Obtener_Imagen_Usuario()
+{
+    try {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['Usuario'])) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Sesión no válida. Inicia sesión nuevamente.'
+            ]);
+            return;
+        }
+
+        $conexion = Conexion(true);
+        if (!$conexion) {
+            throw new Exception("No se pudo conectar a la base de datos.");
+        }
+
+        $sql = "SELECT Imagen_Usuario FROM Usuarios WHERE Usuario = :usuario";
+        $query = $conexion->prepare($sql);
+        $query->bindParam(':usuario', $_SESSION['Usuario']);
+        $query->execute();
+
+        if ($query->rowCount() > 0) {
+            $resultado = $query->fetch(PDO::FETCH_ASSOC);
+            $nombreImagen = $resultado['Imagen_Usuario'];
+
+            $imagenPorDefecto = "../images/other/usuario.jpg";
+
+            if (empty($nombreImagen) || strtolower(trim($nombreImagen)) === 'no aplica') {
+                $imagenFinal = $imagenPorDefecto;
+            } else {
+                $rutaImagen = "../images/usuarios/" . $nombreImagen;
+
+                if (file_exists($rutaImagen)) {
+                    $imagenFinal = $rutaImagen;
+                } else {
+                    $imagenFinal = $imagenPorDefecto;
+                }
+            }
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Imagen obtenida correctamente.',
+                'ruta' => $imagenFinal
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Usuario no encontrado.'
+            ]);
+        }
+
+    } catch (PDOException $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error en la base de datos.',
+            'error' => $e->getMessage()
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Ocurrió un error inesperado.',
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+
+function Guardar_Imagen_Usuario($data)
+{
+    try {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['ID_Usuario']) || empty($data)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Sesión inválida o imagen no proporcionada.'
+            ]);
+            return;
+        }
+
+        $idUsuario = $_SESSION['ID_Usuario'];
+        $nombreArchivo = $idUsuario . '.png';
+        $rutaDirectorio = '../images/usuarios/';
+        $rutaArchivo = $rutaDirectorio . $nombreArchivo;
+
+        // Eliminar si ya existe
+        if (file_exists($rutaArchivo)) {
+            unlink($rutaArchivo);
+        }
+
+        // Limpiar base64
+        $imagenBase64 = preg_replace('#^data:image/\w+;base64,#i', '', $data);
+        $imagenBinaria = base64_decode($imagenBase64);
+
+        $imagen = imagecreatefromstring($imagenBinaria);
+        if (!$imagen) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'No se pudo procesar la imagen.'
+            ]);
+            return;
+        }
+
+        // Crear imagen nueva con transparencia
+        $ancho = imagesx($imagen);
+        $alto = imagesy($imagen);
+        $imagenConTransparencia = imagecreatetruecolor($ancho, $alto);
+        imagesavealpha($imagenConTransparencia, true);
+        $transparente = imagecolorallocatealpha($imagenConTransparencia, 0, 0, 0, 127);
+        imagefill($imagenConTransparencia, 0, 0, $transparente);
+        imagecopy($imagenConTransparencia, $imagen, 0, 0, 0, 0, $ancho, $alto);
+
+        // Guardar como PNG
+        imagepng($imagenConTransparencia, $rutaArchivo);
+
+        imagedestroy($imagen);
+        imagedestroy($imagenConTransparencia);
+
+        // Guardar en base de datos
+        $conexion = Conexion(true);
+        $sql = "UPDATE Usuarios SET Imagen_Usuario = :imagen WHERE ID = :id";
+        $query = $conexion->prepare($sql);
+        $query->execute([
+            ':imagen' => $nombreArchivo,
+            ':id' => $idUsuario
+        ]);
+
+        // Actualizar sesión
+        $_SESSION['Imagen'] = $nombreArchivo;
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Imagen actualizada exitosamente.',
+            'ruta' => $rutaArchivo,
+            'imagen' => $nombreArchivo
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error al guardar imagen.',
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+
+function Eliminar_Imagen_Usuario()
+{
+    try {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['ID_Usuario'])) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Sesión inválida.'
+            ]);
+            return;
+        }
+
+        $idUsuario = $_SESSION['ID_Usuario'];
+
+        // Actualizar la base de datos para cambiar Imagen_Usuario a 'No aplica'
+        $conexion = Conexion(true);
+        $sql = "UPDATE Usuarios SET Imagen_Usuario = 'No aplica' WHERE ID = :id";
+        $query = $conexion->prepare($sql);
+        $query->execute([
+            ':id' => $idUsuario
+        ]);
+
+        // Eliminar la imagen físicamente si existe en el directorio
+        $rutaImagen = '../images/usuarios/' . $idUsuario . '.png';
+        if (file_exists($rutaImagen)) {
+            unlink($rutaImagen);  // Eliminar la imagen del servidor
+        }
+
+        // Actualizar el valor en la sesión
+        $_SESSION['Imagen'] = 'No aplica';
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Imagen eliminada exitosamente.'
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error al eliminar imagen.',
+            'error' => $e->getMessage()
+        ]);
+    }
 }

@@ -133,3 +133,33 @@ function ComponerModalPregunta(titulo, subtitulo, altura, anchura) {
 </div>`
   return contenido
 }
+
+function ComponerModalConfirmarAccion(imagen, titulo, subtitulo, altura, anchura) {
+  var contenido = `<div class="anchura-100-por-ciento flex flex-center" style="width:${anchura}; height:${altura}">
+  <div class="anchura-100-por-ciento altura-100-por-ciento top-0 left-0 bg-color-white z-index-10000 borde-redondeado-5-px" style="padding:10px 0px">
+    <div class="anchura-100-por-ciento flex flex-center margin-10-px-auto" style="height:100px">
+      ${imagen}
+    </div>
+      <div class="anchura-100-por-ciento altura-30-px margin-10-px-auto flex flex-center">
+                  <span class="font-11-rem" style="font-weight: 700;">${titulo}</span>
+      </div>
+      <div class="anchura-100-por-ciento altura-30-px margin-10-px-auto flex flex-center">
+                  <span class="font-09-rem"">${subtitulo}</span>
+      </div>
+      <div class=" anchura-100-por-ciento-con-padding-5px-lateral padding-5px-lateral altura-50-px flex flex-center">
+          <div class="anchura-50-por-ciento altura-100-por-ciento flex flex-left">
+                      <a class="boton altura-35-px padding-10px-lateral boton-secundario bg-color-boton-secundario flex flex-center font-09-rem min-width-110px position-relative borde-redondeado-5-px" id="BotonRespuestaNoAccionModal">
+                          <span>No</span>
+                      </a>
+          </div>
+          <div class="anchura-50-por-ciento altura-100-por-ciento flex flex-right">
+                      <a class="boton altura-35-px padding-10px-lateral boton-importante flex flex-center font-09-rem min-width-110px position-relative borde-redondeado-5-px" id="BotonRespuestaSiAccionModal">
+                          <span>Sí</span>
+                      </a>
+          </div>
+      </div>
+  </div>
+   
+</div>`
+  return contenido
+}

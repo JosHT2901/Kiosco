@@ -91,7 +91,10 @@
 .anchura-100-por-ciento-con-borde-1px {
     width: calc(100% - 2px);
 }
-
+.altura-100-px
+{
+    height: 100px;
+}
 .altura-100-vh {
     height: 100vh;
 }

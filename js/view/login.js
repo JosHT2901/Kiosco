@@ -4,16 +4,19 @@ $("#BotonVerPasswordLogin").click(function (e) {
 })
 
 $("#BotonIniciarSesion").click(function (e) {
-    if ($("#InputUsuarioLogin").val().length == 0) {
+    var usuario = $("#InputUsuarioLogin").val().trim()
+    var password = $("#InputPasswordLogin").val().trim()
+    if (usuario.length == 0) {
         contenido = ComponerContenidoAdvertencia(imagenError, 'Verifica', 'Ingresa tu usuario');
         MostrarModal(contenido);
-    } else if ($("#InputPasswordLogin").val().length == 0) {
+    } else if (password.length == 0) {
         contenido = ComponerContenidoAdvertencia(imagenError, 'Verifica', 'Ingresa tu contraseña o tu PIN');
         MostrarModal(contenido);
     } else {
         CrearLoader('CargandoLogin', "ContenedorLogin")
         var usuario = $("#InputUsuarioLogin").val().trim()
         var password = $("#InputPasswordLogin").val().trim()
+
         const data = {
             accion: 'Iniciar_sesion',
             data: {
@@ -23,24 +26,22 @@ $("#BotonIniciarSesion").click(function (e) {
         };
         ajaxConParametros(undefined, data)
             .then(response => {
-                console.log(response)
                 response = JSON.parse(response)
                 console.log(response)
-                if (response == 'Este usuario no está registrado o está deshabilitado.')
-                {
+                if (!response.success) {
                     EliminarLoader('CargandoLogin')
-                    contenido = ComponerContenidoAdvertencia(imagenError, 'Error',response);
-                    MostrarModal(contenido);
-                }
-                else if(response=='Contraseña incorrecta.')
-                {
-                    EliminarLoader('CargandoLogin')
-                    contenido = ComponerContenidoAdvertencia(imagenError, 'Error', 'Verifica tu contraseña');
-                    MostrarModal(contenido);
-                }
-                else if(response=='Inicio correcto')
-                {
-                    window.location.href='seleccionar-sucursal.php'
+                    contenido = ComponerContenidoAdvertencia('../../icons/windows/error.png', 'Error', response.message);
+                    MostrarModal(contenido,false);
+                    setTimeout(() => {
+                        CerrarModal
+                    }, 1000);
+
+                } else if (response.success) {
+                    if (response.tienePermisos) {
+                        window.location.href = "seleccionar-sucursal.php";
+                    } else {
+                        window.location.href = "inicio.php";
+                    }
                 }
 
             })

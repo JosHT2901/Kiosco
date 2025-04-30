@@ -78,3 +78,4 @@ $(document).click(function (e) {
         contenedorOpciones.remove(); // Elimina el contenedor de opciones
     }
 });
+

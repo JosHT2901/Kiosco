@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="../../css/main/select2.min.css">
 <link rel="stylesheet" href="../../css/main/switch.css">
 <link rel="stylesheet" href="../../css/main/croppie.min.css">
+<link rel="stylesheet" href="../../css/main/opciones.css">
 <script src="../../library/js/jquery-3.7.1.min.js"></script>
 <script src="../../library/js/select2.min.js"></script>
 <script src="../../library/js/croppie.min.js"></script>
@@ -24,6 +25,7 @@
 <script src="../../js/view/modal.js"></script>
 <script src="../../js/view/opciones.js"></script>
 <script src="../../js/view/ajax.js"></script>
+
 <?php
     include_once "../include/modal.php";
 ?>

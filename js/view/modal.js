@@ -81,7 +81,7 @@ function CerrarModal() {
   $('#modal-advertencia').fadeOut(200);
   $('#BotonCancelarAccionModal').off();
   $('#BotonConfirmarAccionModal').off();
-
+  $('html').removeClass('no-scroll');
 }
 
 function AbrirModalIframe(url, height) {

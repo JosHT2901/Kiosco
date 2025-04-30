@@ -194,7 +194,7 @@ $("#BotonCambiarSucursal").click(function (e) {
             CrearLoader('CargandoSucursales', "ContenedorMenuSucursales");
 
             const data = {
-                accion: 'Obtener_Sucursales_Con_Sucursal_Actual'
+                accion: 'Obtener_Sucursales_Sin_Sucursal_Actual'
             };
 
             ajaxConParametros(undefined, data)

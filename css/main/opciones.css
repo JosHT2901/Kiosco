@@ -1,0 +1,29 @@
+.menu, .submenu {
+    list-style: none;
+    margin: 0;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    position: relative;
+}
+.has-submenu > .submenu {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    min-width: 160px;
+    background: white;
+    border: 1px solid #ddd;
+    z-index: 1000;
+    padding: 10px 0px;
+    border-radius: 10px;
+    color: black;
+}
+
+.has-submenu:hover > .submenu {
+    display: block;
+}

@@ -8,7 +8,7 @@
     display: flex;
 }
 
-.tarjeta-hover:hover
+.tarjeta-hover:hover,.boton-active
 {
     background-color: #dbedf8;
     color: #1474c4;
@@ -41,7 +41,7 @@
     transition-timing-function: cubic-bezier(.16, 1, .29, .99);
     color: #013f71;
 }
-.boton-solo-icono:hover>svg
+.boton-solo-icono:hover>svg, .boton-solo-icono:hover>div>svg,.boton-active>svg
 {
     fill:#1474c4;
 }
@@ -63,7 +63,6 @@
 .botones-ancho-fijo {
     flex-grow: 0;
     flex-shrink: 0;
-    font-weight: 600;
 }
 
 .tarjeta-menu
@@ -130,4 +129,15 @@
 .tarjeta-hover:hover>.botones-tarjeta-hover, .tarjeta-con-botones:hover>.botones-tarjeta-con-botones
 {
     display: flex;
+}
+.tarjeta-active, .tarjeta-seleccionada
+{
+    background-color: #585858;
+    color: white;
+    border: 1px solid #cacaca;
+}
+.tarjeta-hover-gray:hover
+{
+    background-color: #e6e6e6;
+    color: #1474c4;
 }

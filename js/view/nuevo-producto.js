@@ -614,7 +614,7 @@ function ContenidoPaginaCrearProducto_5() {
     $("#ColumnaTarjetaLogin").removeClass('anchura-400-px').addClass('anchura-80-por-ciento')
     $("#ContenedorContenidoPaginaCrearProducto").html(`<div class="overflow-auto">
                     <div class="anchura-100-por-ciento-con-padding-5px-lateral font-11-rem font-family-Montserrat-Semi-Bold padding-5px-lateral altura-30-px flex flex-center margin-10-px-auto">
-                        <span>Precios</span>
+                        <span>Precios (sin impuestos)</span>
                     </div>
                     <form class="overflow-auto margin-10-px-auto">
                         <div class="overflow-auto" style="max-height: 320px;">

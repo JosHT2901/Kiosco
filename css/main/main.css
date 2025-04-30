@@ -125,6 +125,8 @@ li {
     /* Chrome, Safari y Edge */
 }
 
+
+
 .borde-izquierdo-derecho {
     border-left: 1px solid #585858;
     border-right: 1px solid #585858;
@@ -142,4 +144,12 @@ li {
     display: flex;
     flex-wrap: wrap;
     width: fit-content;
+}
+.cursor-pointer
+{
+    cursor: pointer;
+}
+.cursor-default
+{
+    cursor: default;
 }

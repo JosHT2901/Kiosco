@@ -54,7 +54,7 @@ function obtenerAnchuraScrollBarHorizontal($elemento) {
 }
 
 function ImprimirNoHayResultados(contenedor, texto) {
-    contenedor.html(`<div class="anchura-100-por-ciento altura-100-por-ciento flex flex-center">
+    contenedor.html(`<div class="anchura-100-por-ciento altura-100-por-ciento flex flex-center position-absolute">
         <div class="overflow-auto">
             <div class="anchura-100-por-ciento altura-150-px flex flex-center margin-10-px-auto">
                 <img src="../../icons/basic/astronauta.png" class="altura-100-por-ciento">
@@ -131,3 +131,27 @@ async function ContenidoPaginaGuardando(contenedor) {
                         </div>
                     </div>`)
 }
+
+async function Obtener_Sucursales() {
+    const data = {
+        accion: 'Obtener_Sucursales',
+    };
+
+    try {
+        const response = await ajaxConParametros(undefined, data);
+        return response;
+    } catch (error) {
+        const contenido = ComponerContenidoAdvertencia(
+            '../../icons/windows/eliminar.png',
+            'Error',
+            'Intenta más tarde'
+        );
+        console.error("Error en Obtener_Sucursales:", error);
+        MostrarModal(contenido, false);
+        setTimeout(() => {
+            CerrarModal();
+        }, 1000);
+        throw error;
+    }
+}
+

@@ -65,8 +65,8 @@ switch ($_POST['accion']) {
     case 'Cerrar_sesion':
         Cerrar_sesion();
         break;
-    case 'Obtener_Sucursales_Con_Sucursal_Actual':
-        Obtener_Sucursales_Con_Sucursal_Actual();
+    case 'Obtener_Sucursales_Sin_Sucursal_Actual':
+        Obtener_Sucursales_Sin_Sucursal_Actual();
         break;
     case 'Cambiar_sucursal':
         Cambiar_sucursal($_POST['data']);
@@ -79,6 +79,15 @@ switch ($_POST['accion']) {
         break;
     case 'Eliminar_Imagen_Usuario':
         Eliminar_Imagen_Usuario();
+        break;
+    case 'Obtener_Productos_Con_Existencias':
+        Obtener_Productos_Con_Existencias($_POST['data']);
+        break;
+    case 'Obtener_Sucursales_Con_Sucursal_Actual':
+        Obtener_Sucursales_Con_Sucursal_Actual();
+        break;
+    case 'Buscar_Productos_Con_Existencias':
+        Buscar_Productos_Con_Existencias($_POST['data']);
         break;
     default:
         # code...

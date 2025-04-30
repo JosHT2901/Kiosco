@@ -4,28 +4,7 @@ $(document).ready(function () {
     InicializarPaginaSeleccionarSucursal()
 });
 
-async function Obtener_Sucursales() {
-    const data = {
-        accion: 'Obtener_Sucursales',
-    };
 
-    try {
-        const response = await ajaxConParametros(undefined, data);
-        return response;
-    } catch (error) {
-        const contenido = ComponerContenidoAdvertencia(
-            '../../icons/windows/eliminar.png',
-            'Error',
-            'Intenta más tarde'
-        );
-        console.error("Error en Obtener_Sucursales:", error);
-        MostrarModal(contenido, false);
-        setTimeout(() => {
-            CerrarModal();
-        }, 1000);
-        throw error;
-    }
-}
 
 async function InicializarPaginaSeleccionarSucursal() {
     try {

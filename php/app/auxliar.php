@@ -2,90 +2,52 @@
 <html class="font-family-Montserrat contenedor color-letra-2">
 
 <head>
-    <?php
-    include_once "../include/head.php";
-    ?>
-    <link rel="stylesheet" href="../../css/view/crear-usuario.css">
-    <style>
-.menu-container {
-  position: relative;
-  display: inline-block;
-}
-
-#menuToggle {
-  cursor: pointer;
-  background: none;
-  border: none;
-  font-size: 20px;
-}
-
-.menu {
-    display: none;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 0;
-    list-style: none;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    min-width: 160px;
-    z-index: 1000;
-}
-
-
-.menu-item {
-  padding: 10px 15px;
-  cursor: pointer;
-  position: relative;
-  white-space: nowrap;
-}
-
-.menu-item:hover {
-  background-color: #f0f0f0;
-}
-
-.has-submenu .submenu {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 100%;
-  margin-left: 1px;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  min-width: 150px;
-  z-index: 1001;
-}
-
-.has-submenu:hover .submenu {
-  display: block;
-}
-
-    </style>
+  <?php
+  include_once "../include/head.php";
+  ?>
+  <link rel="stylesheet" href="../../css/view/crear-usuario.css">
 </head>
 
 <body>
-<div class="menu-container">
-  <button id="menuToggle">⋮</button>
-  <ul class="menu" id="mainMenu">
-    <li class="menu-item">Abrir</li>
-    <li class="menu-item">Compartir</li>
-    <li class="menu-item has-submenu">
-      Más acciones
-      <ul class="submenu">
-        <li>Renombrar</li>
-        <li>Mover a...</li>
-        <li>Descargar</li>
-      </ul>
-    </li>
-    <li class="menu-item">Eliminar</li>
-  </ul>
-</div>
-
+  <div class="anchura-80-por-ciento bg-color-white overflow-auto padding-10px-lateral borde-redondeado-10-px box-shadow-1 position-absolute border-2-px-white"
+    style="top: 30px; left: 50%; transform: translateX(-50%); z-index: 9999;">
+    <div class="anchura-100-por-ciento altura-100-por-ciento overflow-auto margin-10-px-auto">
+      <form class="overflow-auto margin-10-px-auto altura-100-por-ciento">
+        <div class="overflow-auto flex flex-center altura-100-por-ciento">
+          <div class=" anchura-50-por-ciento-con-padding-5px-lateral padding-5px-lateral altura-100-por-ciento">
+            <div class="anchura-100-por-ciento altura-30-px flex flex-left font-09-rem">
+              <span class="label-input">Fecha inicio</span>
+            </div>
+            <div class="anchura-100-por-ciento altura-40-px">
+              <div class="bg-color-input altura-100-por-ciento anchura-100-por-ciento borde-redondeado-5-px">
+                <input type="date" class="input">
+              </div>
+            </div>
+          </div>
+          <div class="anchura-50-por-ciento-con-padding-5px-lateral padding-5px-lateral altura-100-por-ciento">
+            <div class="anchura-100-por-ciento altura-30-px flex flex-left font-09-rem">
+              <span class="label-input">Fecha final</span>
+            </div>
+            <div class="anchura-100-por-ciento altura-40-px">
+              <div class="bg-color-input altura-100-por-ciento anchura-100-por-ciento borde-redondeado-5-px">
+                <input type="date" class="input">
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="anchura-100-por-ciento altura-40-px flex flex-center margin-10-px-auto">
+      <div class="anchura-50-por-ciento-con-padding-5px-lateral altura-100-por-ciento flex flex-left">
+        <a class="boton boton-solo-letra" id="BotonCerrarSesion">Cerrar sesión</a>
+      </div>
+      <div class="anchura-50-por-ciento-con-padding-5px-lateral altura-100-por-ciento flex flex-right">
+        <a class="boton altura-35-px padding-10px-lateral boton-importante flex flex-center font-09-rem  position-relative borde-redondeado-5-px" href="mi-cuenta.php">
+          <span>Filtrar</span>
+        </a>
+      </div>
+    </div>
+  </div>
 </body>
-<script>
-$(document).ready(function () {
-    
-});
 
-</script>
 </html>

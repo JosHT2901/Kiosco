@@ -12,7 +12,13 @@
     font-family: "Montserrat-Bold";
     src: url('../../fonts/Montserrat/Montserrat-Bold.ttf');
 }
-
+*
+{
+    ser-select: none;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* Internet Explorer/Edge */
+}
 html,
 body {
     margin: 0px auto;

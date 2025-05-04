@@ -14,6 +14,7 @@ if (empty($_SESSION) || !isset($_SESSION['Activo']) || $_SESSION['Activo'] !== t
 <head>
     <?php
     include_once "../include/head.php";
+    include_once "../include/pagina-protegida.php"
     ?>
     <link rel="stylesheet" href="../../css/view/menu.css">
     <link rel="stylesheet" href="../../css/view/lista-compra.css">

@@ -59,43 +59,60 @@ $(document).on('click', function (e) {
 });
 
 $(document).ready(function () {
+    // Variable global para la sucursal actual
+    window.sucursalActual = null;
+
+    // Función para actualizar la hora
     function actualizarHora() {
-        var ahora = new Date();
+        const ahora = new Date();
+        let horas = ahora.getHours();
+        const minutos = String(ahora.getMinutes()).padStart(2, '0');
+        const amPm = horas >= 12 ? 'PM' : 'AM';
 
-        // Obtener horas y minutos
-        var horas = ahora.getHours();
-        var minutos = String(ahora.getMinutes()).padStart(2, '0');
-
-        // Determinar AM o PM
-        var amPm = horas >= 12 ? 'PM' : 'AM';
-
-        // Convertir horas al formato de 12 horas
         horas = horas % 12;
-        horas = horas ? String(horas).padStart(2, '0') : '12'; // 0 -> 12 para el formato de 12 horas
+        horas = horas ? String(horas).padStart(2, '0') : '12';
 
-        var horaFormateada = horas + ':' + minutos + ' ' + amPm;
-
-        // Mostrar la hora en el div
+        const horaFormateada = `${horas}:${minutos} ${amPm}`;
         $('#SpanHora').text(horaFormateada);
     }
 
-    // Actualizamos la hora inmediatamente al cargar la página (sin retraso)
+    // Función para obtener la sucursal actual usando ajaxConParametros
+    async function ObtenerSucursalActual() {
+        const data = {
+            accion: 'Obtener_Sucursal_Actual'
+        };
+
+        try {
+            var response = await ajaxConParametros(undefined, data);
+            response=JSON.parse(response)
+            if (response && response.sucursalActualID) {
+                window.sucursalActual = {
+                    id: response.sucursalActualID,
+                    nombre: response.sucursalActualNombre
+                };
+            } else {
+                console.warn("No se recibió información de sucursal.");
+            }
+        } catch (error) {
+            console.error("Error al obtener sucursal actual:", error);
+        }
+    }
+
+    // Ejecutar funciones al cargar la página
     actualizarHora();
+    ObtenerSucursalActual();
 
-    // Sincronizamos la próxima actualización con el tiempo exacto
-    var now = new Date();
-    var nextMinute = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes() + 1, 0, 0); // El próximo minuto exacto
+    // Sincronizar próxima actualización con el inicio del próximo minuto
+    const now = new Date();
+    const nextMinute = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes() + 1, 0, 0);
+    const timeUntilNextMinute = nextMinute.getTime() - now.getTime();
 
-    // Calcular el tiempo hasta el próximo minuto exacto
-    var timeUntilNextMinute = nextMinute.getTime() - now.getTime();
-
-    // Esperamos hasta el próximo minuto exacto para la primera actualización
-    setTimeout(function () {
-        // Después de este primer timeout, actualizamos cada minuto
-        actualizarHora(); // Actualización inmediata
-        setInterval(actualizarHora, 60000); // Luego actualizamos cada minuto
+    setTimeout(() => {
+        actualizarHora();
+        setInterval(actualizarHora, 60000);
     }, timeUntilNextMinute);
 });
+
 
 $("#BotonMenuCuentaUsuario").click(function (e) {
 
@@ -234,9 +251,17 @@ $("#BotonCambiarSucursal").click(function (e) {
                                 </div>
                             `).addClass('flex flex-center');
                         } else {
-                            const contenido = ComponerContenidoAdvertencia('../../icons/windows/eliminar.png', 'Error', 'Intenta más tarde');
-                            MostrarModal(contenido, false);
-                            setTimeout(CerrarModal, 1000);
+                            $menu.html(`
+                                <div class="anchura-100-por-ciento">
+                                    <div class="anchura-100-por-ciento flex flex-center margin-10-px-auto position-relative">
+                                        <img src="../../icons/basic/astronauta.png" style="height:80px">
+                                    </div>
+                                    <div class="anchura-100-por-ciento altura-50-px flex flex-center">
+                                        <span>Ocurrió un error</span>
+                                    </div>
+                                </div>
+                            `).addClass('flex flex-center');
+                            console.log(response.message)
                         }
                     }
                     EliminarLoader('CargandoSucursales');

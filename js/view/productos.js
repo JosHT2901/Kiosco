@@ -4,6 +4,10 @@ var ProductosSeleccionados = []
 var pagina = 1
 var RegistrosPorPagina = 10
 let debounceTimer
+let sucursalSeleccionada = null
+let FiltroProductos = false
+let tipodeFiltro = null
+let opcionFiltro = null
 window.addEventListener('message', function (event) {
     /*if (event.data ?.tipo === 'producto-creado') {
             CerrarModal()
@@ -19,16 +23,14 @@ $("#BotonAgregarNuevoProducto").click(function (e) {
 })
 
 $(document).ready(async function (e) {
-
     MostrarModal(
         ComponerModalCargando('Obteniendo información', 'auto', '400px'),
         false
     );
 
     await Inicializar_Pagina_Productos();
-    await ProcesarSucursalesExistenciasProductos();
     CerrarModal()
-
+    sucursalSeleccionada = window.sucursalActual.id
 })
 
 function ObtenerAlturaContenedor() {
@@ -57,7 +59,6 @@ async function Obtener_Producto_Base_Datos(pagina = 1) {
 
         // Llamada a la función AJAX
         const response = await ajaxConParametros(undefined, data);
-        console.log(response);
         const parsedResponse = JSON.parse(response);
 
         // Si la respuesta es exitosa, devolvemos los datos
@@ -317,7 +318,6 @@ function ProcesarInformacionProductos(objeto, div = 'ContenedorTablaPaginaProduc
     $("#SelectRegistros").val(RegistrosPorPagina).trigger('change.select2');
     $("#SelectRegistros").off().on('change', function () {
         RegistrosPorPagina = parseInt($(this).val(), 10);
-        console.log(RegistrosPorPagina)
         // Ejemplo: volver a renderizar la tabla
         RenderizarProductos(1); // Cargar desde página 1
     });
@@ -333,10 +333,10 @@ async function ImprimirEstructura() {
                         <div class=" anchura-100-por-ciento-menos-20-px padding-10px-lateral altura-100-por-ciento flex flex-center">
                             <div class="altura-40-px padding-10px-lateral box-shadow-1 borde-redondeado-10-px bg font-09-rem flex flex-center bg-color-white" style="min-width: 80%;">
                                 <div class="altura-100-por-ciento flex flex-center  color-letra-subtitulo" style="font-weight: 600; width:calc(100% - 40px)">
-                                    <span>Etcétera Morelos</span>
+                                    <span id="SpanNombreSucursalActualTablaProductos">${window.sucursalActual.nombre}</span>
                                 </div>
                                 <div class="anchura-40-px altura-40-px flex flex-center margin-0px-5px">
-                                    <a class="boton boton-solo-icono anchura-30-px altura-30-px tarjeta-hover borde-redondeado-5-px flex flex-center" id="BotonCambiarSucursal">
+                                    <a class="boton boton-solo-icono anchura-30-px altura-30-px tarjeta-hover borde-redondeado-5-px flex flex-center" id="BotonCambiarSucursalPaginaProductos">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 256 256">
                                         <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
                                         </path>
@@ -416,6 +416,7 @@ function EventosTablaProductos() {
 
             // Guardamos el ID del producto al que pertenece el menú actual
             $("#menu-opciones").data("productoId", productoId);
+            EventosBotonesAccionesProducto(productoId)
         }
     });
     $("[name='InputCheckSelectProductos']").change(function (e) {
@@ -441,7 +442,6 @@ function EventosTablaProductos() {
         // Actualizar contador y botones
         ActualizarBotonesProductosSeleccionados();
     });
-
     $("#CheckSelectTodosProductos").change(function (e) {
         const isChecked = $(this).is(':checked');
 
@@ -502,63 +502,6 @@ function syncScroll(source) {
 $("#DivContenedorTarjetasDescripcionProducto, #DivContenedorTarjetasInformacionProductos, #DivContenedorTarjetasExistenciasProductos").on("scroll", function () {
     syncScroll(this);
 });
-
-async function ProcesarSucursalesExistenciasProductos() {
-    const $select = $("#SelectSucursalExisteciasProductos");
-
-    const data = {
-        accion: 'Obtener_Sucursales_Con_Sucursal_Actual',
-    };
-
-    try {
-        // Llamada AJAX para obtener las sucursales
-        var response = await ajaxConParametros(undefined, data);
-        response = JSON.parse(response)
-        // Verificar si la respuesta es correcta
-        if (!response.success) {
-            throw new Error(response.message);
-        }
-        console.log(response)
-        // Obtener la sucursal actual y otras sucursales
-        const sucursalActual = response.data.sucursal_actual;
-        const sucursales = response.data.otras_sucursales;
-
-        // Limpiar y preparar el select
-        $select.empty();
-        $select.append(new Option('-- Selecciona una sucursal --', ''));
-
-        // Agregar las opciones al select
-        sucursales.forEach(sucursal => {
-            let texto = sucursal.Nombre;
-
-            if (sucursal.ID === sucursalActual.ID) {
-                texto = `Sucursal actual - ${sucursal.Nombre}`;
-            }
-
-            const option = new Option(texto, sucursal.id);
-
-
-            $select.append(option);
-        });
-
-        // Inicializar select2
-        $select.select2({
-            placeholder: 'Buscar sucursal...',
-            allowClear: false
-        })
-
-    } catch (error) {
-        // Manejo de errores
-        const contenido = ComponerContenidoAdvertencia(
-            '../../icons/windows/eliminar.png',
-            'Error',
-            'Intenta más tarde'
-        );
-        console.error("Error en Obtener_Sucursales:", error);
-        MostrarModal(contenido, false);
-    }
-}
-
 
 function ActualizarBotonesProductosSeleccionados() {
     const cantidad = ProductosSeleccionados.length;
@@ -815,13 +758,12 @@ function EventosEstructuraPaginaProductos() {
         EventoBuscarProducto();
     });
 
-
     $("#BotonFiltrarProductos").click(function (e) {
         let $contenedor = $("#ContenedorBarraAccionesAdicionalesProducto");
-    
+
         // Generar botones desde las opciones
         const botones = opcionesMenuFiltroProductos.map(opcion => `
-            <a class="boton altura-30-px margin-0px-5px padding-10px-lateral boton-secundario border-1-px-6d6d6d76 flex flex-center font-09-rem position-relative borde-redondeado-15-px botones-ancho-fijo">
+            <a class="boton altura-30-px margin-0px-5px padding-10px-lateral boton-secundario border-1-px-6d6d6d76 flex flex-center font-09-rem position-relative borde-redondeado-15-px botones-ancho-fijo boton-has-opciones" id="${opcion.id}" data-name="${opcion.name}">
                 <div class="altura-100-por-ciento padding-10px-lateral flex flex-center">
                     <span>${opcion.titulo}</span>
                 </div>
@@ -832,7 +774,7 @@ function EventosEstructuraPaginaProductos() {
                 </div>
             </a>
         `).join("");
-    
+
         // Si el contenedor no existe, crearlo
         if ($contenedor.length === 0) {
             $("#ContenedorBarraAccionesPaginaProductos").append(`
@@ -851,25 +793,96 @@ function EventosEstructuraPaginaProductos() {
                     </div>
                 </div>
             `);
-    
+
             $contenedor = $("#ContenedorBarraAccionesAdicionalesProducto"); // Reasignar ahora que existe
         } else {
             // Solo actualizamos los botones, sin borrar el contenedor
             $("#ContenedorBotonesAccionesFiltroProductos").html(botones);
         }
-    
+
         // Calcular y aplicar la posición
         const posicion = $("#BotonFiltrarProductos").parent().offset();
         const leftPos = posicion.left - $contenedor.outerWidth();
-    
+
         $contenedor.css('left', (leftPos < 0 ? 10 : leftPos) + 'px');
-    
+
         // Evento para cerrar
         $("#BotonCerrarFiltroProductos").off("click").on("click", function () {
-            RenderizarProductos(1);
+            if (FiltroProductos) {
+                RenderizarProductos(1);
+            }
             $contenedor.remove();
         });
+        EventosFiltrosProductos()
     });
+
+    $("#BotonCambiarSucursalPaginaProductos").click(function (e) {
+        e.stopPropagation(); // evita que se cierre si se hace click en el botón
+
+        const id = 'ContenedorMenuSucursalesPaginaProductos';
+        AgregarMenu(id, $(this), function ($menu) {
+            $menu.html(''); // Limpiar cualquier contenido previo
+
+            // Mostrar el loader mientras se cargan los datos
+            CrearLoader('CargandoSucursales', "ContenedorMenuSucursalesPaginaProductos");
+
+            const data = {
+                accion: 'Obtener_Sucursales_Con_Nombre_Sucursal_Actual'
+            };
+
+            ajaxConParametros(undefined, data)
+                .then(response => {
+                    response = JSON.parse(response);
+                    if (response.success) {
+                        $menu.html(`
+                            <div class="anchura-100-por-ciento-padding-10px altura-100-por-ciento-menos-20-px padding-10px position-relative">
+                                <div class="anchura-100-por-ciento altura-40-px flex flex-center margin-10-px-auto">
+                                    <div class="bg-color-input altura-100-por-ciento anchura-100-por-ciento borde-redondeado-5-px">
+                                        <input type="text" class="input" id="InputBuscarSucursalPaginaProductos" placeholder="Buscar sucursal...">
+                                    </div>
+                                </div>
+                                <div class="anchura-100-por-ciento altura-100-por-ciento-menos-60-px margin-10-px-auto overflow-auto">
+                                    <div class="anchura-100-por-ciento altura-100-por-ciento overflow-auto" style="max-height: 200px;">
+                                        <div class="anchura-100-por-ciento overflow-auto" id="ContenedorTarjetasSucursalesPaginaProducto"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+
+                        if (sucursalSeleccionada == null) {
+                            sucursalSeleccionada = response.sucursalActualID;
+                        }
+
+                        ImprimirTarjetasSucursal(response, $("#ContenedorTarjetasSucursalesPaginaProducto"), 'InputRadioSelectSucursal');
+                        EventoBuscarEnObjeto(response, $("#ContenedorTarjetasSucursalesPaginaProducto"), $("#InputBuscarSucursalPaginaProductos"), 'No se encontraron sucursales');
+                        EventoCheckSeleccionarSucursalPaginaProductos();
+                    } else {
+                        // Mostrar mensaje de error si no hay sucursales disponibles
+                        $menu.html(`
+                            <div class="anchura-100-por-ciento">
+                                <div class="anchura-100-por-ciento flex flex-center margin-10-px-auto position-relative">
+                                    <img src="../../icons/basic/astronauta.png" style="height:80px">
+                                </div>
+                                <div class="anchura-100-por-ciento altura-50-px flex flex-center">
+                                    <span>No hay sucursales disponibles</span>
+                                </div>
+                            </div>
+                        `).addClass('flex flex-center');
+                    }
+
+                    EliminarLoader('CargandoSucursales');
+                })
+                .catch(error => {
+                    EliminarLoader('CargandoSucursales');
+                    console.error(error);
+                    const contenido = ComponerContenidoAdvertencia('../../icons/windows/eliminar.png', 'Error', 'Intenta más tarde');
+                    MostrarModal(contenido, false);
+                    setTimeout(CerrarModal, 1000);
+                });
+        });
+    });
+
+
 }
 
 function EventoBuscarProducto() {
@@ -878,7 +891,7 @@ function EventoBuscarProducto() {
         const valor = $(this).val().trim();
 
         debounceTimer = setTimeout(() => {
-            RenderizarProductosFiltrados(valor, 1); // inicia desde página 1
+            RenderizarProductosBusqueda(valor, 1); // inicia desde página 1
         }, 300); // espera 300 ms después del último tecleo
     });
     $("#BotonLimpiarInputBuscarProducto").click(function (e) {
@@ -935,7 +948,7 @@ async function Obtener_Productos_Busqueda_Base_Datos(pagina = 1, valor = '') {
     }
 }
 
-async function RenderizarProductosFiltrados(valor, pagina = 1) {
+async function RenderizarProductosBusqueda(valor, pagina = 1) {
     try {
         const parsedResponse = await Obtener_Productos_Busqueda_Base_Datos(pagina, valor);
 
@@ -957,7 +970,7 @@ async function RenderizarProductosFiltrados(valor, pagina = 1) {
                     parsedResponse.totalRegistros,
                     parsedResponse.paginaActual,
                     parsedResponse.registrosPorPagina,
-                    (nuevaPagina) => RenderizarProductosFiltrados(valor, nuevaPagina)
+                    (nuevaPagina) => RenderizarProductosBusqueda(valor, nuevaPagina)
                 );
             }
         } else {
@@ -978,7 +991,6 @@ async function RenderizarProductosFiltrados(valor, pagina = 1) {
         MostrarModal(contenido, false);
     }
 }
-
 
 function ImprimirContenedorTablaProductos() {
     $("#ContenedorTablaProductos").html(`<div class="anchura-100-por-ciento" style="height:calc(100% - 50px)">
@@ -1083,4 +1095,945 @@ function VerificarSeleccionTodosProductos() {
 
     // Si todos están seleccionados, marcar el checkbox maestro
     $("#CheckSelectTodosProductos").prop("checked", totalChecks > 0 && totalChecks === totalChecksSeleccionados);
+}
+
+function ImprimirTarjetasSucursal(objeto, div, id, type = 'radio') {
+    var tarjetas = []
+    $.each(objeto.data, function (index, sucursal) {
+        tarjetas.push(`<label><div class="anchura-100-por-ciento-con-borde-1px altura-50-px flex flex-center borde-redondeado-10-px margin-10-px-auto ${sucursalSeleccionada!=sucursal.ID?'tarjeta-hover':''} ${sucursalSeleccionada==sucursal.ID?'tarjeta-active':''}" style="border: 1px solid #f1f1f1;">
+                            <div class="anchura-60-px altura-100-por-ciento flex flex-center">
+                                <input type="${type}" name="${id}" class="checkbox-round" data-id="${sucursal.ID}" data-nombre="${sucursal.Nombre}" ${sucursalSeleccionada==sucursal.ID?'checked':''}>
+                            </div>
+                            <div class="altura-100-por-ciento anchura-100-por-ciento-menos-60-px flex flex-center">
+                                <div class="altura-100-por-ciento anchura-100-por-ciento-menos-20-px padding-10px-lateral flex flex-left font-11-rem">
+                                    <span>${sucursal.Nombre}</span>
+                                </div>
+                            </div>
+                        </div></label>`);
+
+    });
+    // Renderiza las tarjetas en el contenedor
+    div.html(tarjetas);
+}
+
+function ImprimirTarjetas(objeto, div, id, tipo = 'radio') {
+    var tarjetas = []
+    console.log(objeto)
+    $.each(objeto.data, function (index, item) {
+        console.log(item)
+        tarjetas.push(`<label><div class="anchura-100-por-ciento-con-borde-1px altura-50-px flex flex-center borde-redondeado-10-px margin-10-px-auto tarjeta-hover" style="border: 1px solid #f1f1f1;">
+                            <div class="anchura-60-px altura-100-por-ciento flex flex-center">
+                                <input type="${tipo}" name="${id}" class="checkbox-round" data-id="${item.ID}" ${item.Categoria !== undefined ? `data-tipo="${item.Categoria}"` : ''} data-name="${item.Nombre||item.Descripcion}" ${(tipodeFiltro === item.Categoria && item.Categoria !== undefined && (opcionFiltro === item.Nombre || opcionFiltro === item.Descripcion)) ? 'checked' : ''}>
+                            </div>
+                            <div class="altura-100-por-ciento anchura-100-por-ciento-menos-60-px flex flex-center">
+                                <div class="altura-100-por-ciento anchura-100-por-ciento-menos-20-px padding-10px-lateral flex flex-left font-11-rem">
+                                    <span>${item.Nombre||item.Descripcion}</span>
+                                </div>
+                            </div>
+                        </div></label>`);
+
+    });
+    div.html(tarjetas);
+}
+
+function EventoBuscarEnObjeto(objeto, div, input, text) {
+    input.on('input', async function (e) {
+        var textoBusqueda = $(this).val().toLowerCase(); // Convertir a minúsculas
+
+        // Verificamos que 'objeto' y 'objeto.data' estén definidos antes de intentar usar 'filter'
+        if (objeto && objeto.data && Array.isArray(objeto.data)) {
+
+            var filtrado = objeto.data.filter(function (sucursal) {
+                return sucursal.Nombre.toLowerCase().includes(textoBusqueda);
+            });
+
+
+            if (filtrado.length != 0) {
+
+                ImprimirTarjetas({
+                    data: filtrado
+                }, div, 'InputRadioSelectSucursal', 'checkbox');
+            } else {
+                div.html(
+                    `<div class="anchura-100-por-ciento altura-100-por-ciento flex flex-center">
+                                <div>
+                                    <div class="anchura-100-por-ciento altura-150-px flex flex-center">
+                                        <img src="../../icons/basic/lupa.png" class=" altura-80-px">
+                                    </div>
+                                    <div class="anchura-100-por-ciento altura-30-px margin-10-px-auto flex flex-center color-letra-subtitulo font-11-rem">
+                                        <span>${text}</span>
+                                    </div>
+                                </div>
+                            </div>`);
+            }
+
+            EventoCheckSeleccionarSucursalPaginaProductos(); // Asegúrate de llamar a este evento después de que las tarjetas se hayan actualizado
+        } else {
+            console.error("El objeto o los datos no están definidos correctamente.");
+        }
+    });
+}
+
+async function EventoCheckSeleccionarSucursalPaginaProductos() {
+    $("input[name='InputRadioSelectSucursal']").off().on('change', function (e) {
+        const id = $(this).data('id');
+        var nombre = $(this).data('nombre')
+        if (typeof id !== 'undefined' && id !== null) {
+            $('#ContenedorMenuSucursalesPaginaProductos').slideUp(() => {
+                $('#ContenedorMenuSucursalesPaginaProductos').empty()
+                $('#ContenedorMenuSucursalesPaginaProductos').remove();
+            });
+            $("#SpanNombreSucursalActualTablaProductos").text(nombre)
+            RenderizarProductosOtraSucursal(id, 1);
+            sucursalSeleccionada = id
+        } else {
+            console.warn('ID de sucursal no definido en el input seleccionado.');
+        }
+    });
+
+}
+
+async function Obtener_Productos_Otra_Sucursal(pagina = 1, sucursal) {
+    try {
+        if (pagina <= 0 || RegistrosPorPagina <= 0) {
+            throw new Error("Los parámetros 'pagina' y 'RegistrosPorPagina' deben ser mayores que 0.");
+        }
+
+        const data = {
+            accion: 'Obtener_Productos_Otra_Sucursal',
+            data: {
+                pagina,
+                registrosPorPagina: RegistrosPorPagina,
+                sucursal: sucursal
+            }
+        };
+
+        const response = await ajaxConParametros(undefined, data);
+        const parsedResponse = JSON.parse(response);
+
+        return parsedResponse; // Si hay error, se maneja en el catch
+    } catch (error) {
+        console.error("Error al obtener productos:", error);
+
+        const contenido = ComponerContenidoAdvertencia(
+            '../../icons/windows/eliminar.png',
+            'Error',
+            'Intenta más tarde'
+        );
+        MostrarModal(contenido, false);
+
+        return {
+            success: false,
+            data: []
+        };
+    }
+}
+
+async function RenderizarProductosOtraSucursal(sucursal, pagina = 1) {
+    try {
+        const parsedResponse = await Obtener_Productos_Otra_Sucursal(pagina, sucursal);
+
+        if (parsedResponse.success) {
+            const productos = parsedResponse.data;
+
+            if (productos.length === 0) {
+                $("#ContenedorTarjetasExistenciasProductos, #ContenedorTarjetasInformacionProductos, #ContenedorTarjetasDescripcionProducto").empty();
+                $("#ContenedorTablaProductos").html(ImprimirNoHayResultados($("#ContenedorTablaProductos"), 'No hay productos')).addClass('flex flex-center');
+            } else {
+                $("#ContenedorTablaProductos").removeClass('flex flex-center').empty();
+                if ($("#ContenedorTablaProductos").is(":empty")) {
+                    ImprimirContenedorTablaProductos()
+                }
+                ProcesarInformacionProductos(productos, 'ContenedorTablaProductos');
+                EventosTablaProductos();
+                VerificarSeleccionTodosProductos()
+                ActualizarPaginador(
+                    parsedResponse.totalRegistros,
+                    parsedResponse.paginaActual,
+                    parsedResponse.registrosPorPagina,
+                    (nuevaPagina) => RenderizarProductosOtraSucursal(sucursal, nuevaPagina)
+                );
+            }
+        } else {
+            const contenido = ComponerContenidoAdvertencia(
+                '../../icons/windows/eliminar.png',
+                'Error',
+                parsedResponse.message || 'No se encontraron productos'
+            );
+            MostrarModal(contenido, false);
+        }
+    } catch (error) {
+        console.error(error);
+        const contenido = ComponerContenidoAdvertencia(
+            '../../icons/windows/eliminar.png',
+            'Error',
+            'Intenta más tarde'
+        );
+        MostrarModal(contenido, false);
+    }
+}
+
+function EventosFiltrosProductos() {
+    $("#BotonFiltroDepartamento").off().on('click', function (e) {
+        AgregarMenuLlamadaBaseDatos(
+            e,
+            $("#BotonFiltroDepartamento"),
+            'ContenedorMenuFiltroProductos', // ID del botón/menu contenedor
+            'CargandoDepartamentos', // ID del loader
+            'ContenedorTarjetasDepartamentosFiltroProductos', // ID del contenedor de tarjetas
+            'Obtener_departamentos', // Acción a la base de datos
+            'InputBuscarDepartamentoFiltroProductos', // ID del input de búsqueda
+            'Buscar departamentos...', // Placeholder del input
+            'No se encontraron departamentos', // Texto de error
+            'InputRadioSelectFiltroDepartamentos', // name de los inputs tipo radio
+            'Departamentos' // tipoFiltro dinámico
+        );
+        VerificarClaseBotonFiltro($(this))
+    })
+    $("#BotonFiltroUnidadVenta").click(function (e) {
+        AgregarMenuLlamadaBaseDatos(
+            e,
+            $("#BotonFiltroUnidadVenta"),
+            'ContenedorMenuFiltroProductos', // ID del botón/menu contenedor
+            'CargandoUnidades', // ID del loader
+            'ContenedorTarjetasUnidadesFiltroProductos', // ID del contenedor de tarjetas
+            'Obtener_Unidades_Medida', // Acción a la base de datos
+            'InputBuscarUnidadesFiltroProductos', // ID del input de búsqueda
+            'Buscar Unidades...', // Placeholder del input
+            'No se encontraron Unidades', // Texto de error
+            'InputRadioSelectFiltroUnidades', // name de los inputs tipo radio
+            'Unidades' // tipoFiltro dinámico
+        );
+        VerificarClaseBotonFiltro($(this))
+    })
+
+    $("#BotonFiltroTipoVenta").click(function (e) {
+        AgregarMenuDesdeObjetoLocal(
+            e,
+            $("#BotonFiltroTipoVenta"),
+            'ContenedorMenuFiltroProductos',
+            'LoaderMenuTipo',
+            'ContenedorTarjetasTipo',
+            opcionesMenuFiltroProductos,
+            'Tipo de venta',
+            'InputBuscarTipo',
+            'Buscar opción...',
+            'No se encontraron opciones',
+            'InputRadioSelectFiltroTipo',
+            'Tipo'
+        );
+        VerificarClaseBotonFiltro($(this))
+    })
+
+    $("#BotonFiltroIEPS").click(function (e) {
+        AgregarMenuDesdeJSONExterno(
+            e,
+            $("#BotonFiltroIEPS"),
+            'ContenedorMenuFiltroProductos',
+            'LoaderMenuIEPS',
+            'ContenedorTarjetasIEPS',
+            '../../json/tasas-impuestos.json',
+            'ieps',
+            'InputBuscarTasaIEPS',
+            'Buscar tasa...',
+            'No se encontraron opciones',
+            'InputRadioSelectFiltroIEPS',
+            'IEPS'
+        )
+        VerificarClaseBotonFiltro($(this))
+    })
+    $("#BotonFiltroIVA").click(function (e) {
+        AgregarMenuDesdeJSONExterno(
+            e,
+            $("#BotonFiltroIVA"),
+            'ContenedorMenuFiltroProductos',
+            'LoaderMenuIEPS',
+            'ContenedorTarjetasIEPS',
+            '../../json/tasas-impuestos.json',
+            'iva',
+            'InputBuscarTasaIEPS',
+            'Buscar tasa...',
+            'No se encontraron opciones',
+            'InputRadioSelectFiltroIEPS',
+            'IVA'
+        )
+        VerificarClaseBotonFiltro($(this))
+    })
+    $("#BotonFiltroModificacion").click(function (e) {
+        AgregarMenuDesdeObjetoLocal(
+            e,
+            $("#BotonFiltroModificacion"),
+            'ContenedorMenuFiltroProductos',
+            'LoaderMenuModificacion',
+            'ContenedorTarjetasModificacion',
+            opcionesMenuFiltroProductos,
+            'Modificación',
+            'InputBuscarModificacion',
+            'Buscar opción...',
+            'No se encontraron opciones',
+            'InputRadioSelectFiltroModificacion',
+            'Modificacion'
+        );
+        VerificarClaseBotonFiltro($(this))
+    })
+    $("#BotonFiltroCreacion").click(function (e) {
+        AgregarMenuDesdeObjetoLocal(
+            e,
+            $("#BotonFiltroCreacion"),
+            'ContenedorMenuFiltroProductos',
+            'LoaderMenuCreacion',
+            'ContenedorTarjetasCreacion',
+            opcionesMenuFiltroProductos,
+            'Creación',
+            'InputBuscarCreacion',
+            'Buscar opción...',
+            'No se encontraron opciones',
+            'InputRadioSelectFiltroCreacion',
+            'Creacion'
+        );
+        VerificarClaseBotonFiltro($(this))
+    })
+    $("#BotonFiltroExistencias").click(function (e) {
+        AgregarMenuDesdeObjetoLocal(
+            e,
+            $("#BotonFiltroExistencias"),
+            'ContenedorMenuFiltroProductos',
+            'LoaderMenuExistencias',
+            'ContenedorTarjetasExistencias',
+            opcionesMenuFiltroProductos,
+            'Existencias',
+            'InputBuscarExistencias',
+            'Buscar opción...',
+            'No se encontraron opciones',
+            'InputRadioSelectFiltroExistencias',
+            'Existencias'
+        );
+        VerificarClaseBotonFiltro($(this))
+    })
+}
+
+function AgregarMenu(id, boton, contenidoFunc, addClass = false) {
+    let $menu = $("#" + id);
+
+    // Si el menú no existe, lo creamos y lo agregamos al DOM
+    if ($menu.length === 0) {
+        $menu = $('<div id="' + id + '" class="anchura-300-px margin-10-px-auto position-absolute bg-color-white borde-redondeado-2-px overflow-auto box-shadow-1" style="height:300px; display:none;"></div>');
+        $('body').append($menu);
+    }
+
+    // Siempre recalculamos y actualizamos la posición del menú
+    const posicion = boton.offset();
+    const menuHeight = $menu.outerHeight();
+    const menuWidth = $menu.outerWidth();
+    const windowHeight = $(window).height();
+    const windowWidth = $(window).width();
+
+    let topPosition = posicion.top + boton.outerHeight();
+    let leftPosition = posicion.left;
+
+    if (topPosition + menuHeight > windowHeight) {
+        topPosition = windowHeight - menuHeight - 10;
+    }
+
+    if (leftPosition + menuWidth > windowWidth) {
+        leftPosition = windowWidth - menuWidth - 10;
+    }
+
+    $menu.css({
+        'top': topPosition + 'px',
+        'left': leftPosition + 'px',
+        'position': 'absolute',
+        'z-index': 9999
+    });
+
+
+    // Si el menú ya está visible, solo se limpia el contenido y se actualiza
+    if ($menu.is(":visible")) {
+        $menu.empty();
+        contenidoFunc($menu);
+        $(".boton-has-opciones").removeClass('tarjeta-active');
+        if (addClass) {
+            boton.addClass('tarjeta-active')
+        }
+        boton.addClass('tarjeta-active')
+        return;
+    }
+
+    // Si no estaba visible, lo mostramos y llenamos su contenido
+    $menu.empty().slideDown();
+    contenidoFunc($menu);
+    if (addClass) {
+        boton.addClass('tarjeta-active')
+    }
+
+    setTimeout(() => {
+        $('html').one('click', function (e) {
+            // Si el clic fue dentro del menú o del botón, no cerrar
+            if ($(e.target).closest($menu).length || $(e.target).closest('.boton-has-opciones').length) {
+                return;
+            }
+
+            // Cerrar menú y limpiar
+            $menu.slideUp(() => $menu.empty());
+
+            // Quitar clase a todos
+            $(".boton-has-opciones").removeClass('tarjeta-active');
+
+            // Volver a marcar el que coincida con el filtro
+            $(".boton-has-opciones").each(function () {
+                if ($(this).data('name') == tipodeFiltro) {
+                    $(this).addClass('tarjeta-active');
+                }
+            });
+        });
+    }, 0); // o usa 10ms si quieres más seguridad
+    // Evita que los clics dentro del menú lo cierren
+    $menu.on('click', function (e) {
+        e.stopPropagation();
+    });
+}
+
+async function RenderizarProductosFiltrados(pagina, opcion, subopcion) {
+    try {
+        const parsedResponse = await Obtener_Productos_Busqueda_Filtro_Base_Datos(pagina, opcion, subopcion);
+
+        if (parsedResponse.success) {
+            const productos = parsedResponse.data;
+
+            if (productos.length === 0) {
+                $("#ContenedorTarjetasExistenciasProductos, #ContenedorTarjetasInformacionProductos, #ContenedorTarjetasDescripcionProducto").empty();
+                $("#ContenedorTablaProductos").html(ImprimirNoHayResultados($("#ContenedorTablaProductos"), 'No hay productos')).addClass('flex flex-center');
+            } else {
+                $("#ContenedorTablaProductos").removeClass('flex flex-center').empty();
+                if ($("#ContenedorTablaProductos").is(":empty")) {
+                    ImprimirContenedorTablaProductos()
+                }
+                ProcesarInformacionProductos(productos, 'ContenedorTablaProductos');
+                EventosTablaProductos();
+                VerificarSeleccionTodosProductos()
+                ActualizarPaginador(
+                    parsedResponse.totalRegistros,
+                    parsedResponse.paginaActual,
+                    parsedResponse.registrosPorPagina,
+                    (nuevaPagina) => RenderizarProductosFiltrados(nuevaPagina, opcion, subopcion)
+                );
+            }
+        } else {
+            const contenido = ComponerContenidoAdvertencia(
+                '../../icons/windows/eliminar.png',
+                'Error',
+                parsedResponse.message || 'No se encontraron productos'
+            );
+            MostrarModal(contenido, false);
+        }
+    } catch (error) {
+        console.error(error);
+        const contenido = ComponerContenidoAdvertencia(
+            '../../icons/windows/eliminar.png',
+            'Error',
+            'Intenta más tarde'
+        );
+        MostrarModal(contenido, false);
+    }
+}
+
+function AgregarMenuLlamadaBaseDatos(
+    e,
+    boton,
+    idMenu, // ID del trigger que abre el menú
+    idLoader, // ID del loader
+    idContenedor, // ID del contenedor de tarjetas
+    accionDataBase, // Acción que se enviará al servidor
+    idInputBuscar, // ID del input de búsqueda
+    placeholderInput, // Placeholder del input
+    textoError, // Texto de error si no hay resultados
+    nombreInputTarjeta, // name del input generado en cada tarjeta
+    tipoFiltro // Tipo de filtro dinámico (e.g., 'Departamentos')
+) {
+    e.stopPropagation();
+    AgregarMenu(idMenu, boton, function ($menu) {
+        $menu.html(''); // Limpiar cualquier contenido previo
+
+        // Mostrar el loader mientras se cargan los datos
+        CrearLoader(idLoader, idMenu);
+
+        const data = {
+            accion: accionDataBase
+        };
+
+        ajaxConParametros(undefined, data)
+            .then(response => {
+                response = JSON.parse(response);
+
+                if (response.success) {
+                    $menu.html(`
+                            <div class="anchura-100-por-ciento-padding-10px altura-100-por-ciento-menos-20-px padding-10px position-relative">
+                                <div class="anchura-100-por-ciento altura-40-px flex flex-center margin-10-px-auto">
+                                    <div class="bg-color-input altura-100-por-ciento anchura-100-por-ciento borde-redondeado-5-px">
+                                        <input type="text" class="input" id="${idInputBuscar}" placeholder="${placeholderInput}">
+                                    </div>
+                                </div>
+                                <div class="anchura-100-por-ciento altura-100-por-ciento-menos-60-px margin-10-px-auto overflow-auto">
+                                    <div class="anchura-100-por-ciento altura-100-por-ciento overflow-auto" style="max-height: 200px;">
+                                        <div class="anchura-100-por-ciento overflow-auto" id="${idContenedor}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                    ImprimirTarjetas(response, $(`#${idContenedor}`), nombreInputTarjeta, 'checkbox');
+                    EventoBuscarEnObjeto(response, $(`#${idContenedor}`), $(`#${idInputBuscar}`), 'No se encontraron registros');
+                    EventoClickFiltro(nombreInputTarjeta, tipoFiltro)
+                } else {
+                    $menu.html(`
+                            <div class="anchura-100-por-ciento">
+                                <div class="anchura-100-por-ciento flex flex-center margin-10-px-auto position-relative">
+                                    <img src="../../icons/basic/astronauta.png" style="height:80px">
+                                </div>
+                                <div class="anchura-100-por-ciento altura-50-px flex flex-center">
+                                    <span>${textoError}</span>
+                                </div>
+                            </div>
+                        `).addClass('flex flex-center');
+                }
+
+                EliminarLoader(idLoader);
+            })
+            .catch(error => {
+                EliminarLoader(idLoader);
+                console.error(error);
+                const contenido = ComponerContenidoAdvertencia('../../icons/windows/eliminar.png', 'Error', 'Intenta más tarde');
+                MostrarModal(contenido, false);
+                setTimeout(CerrarModal, 1000);
+            });
+    }, true);
+}
+
+function AgregarMenuDesdeObjetoLocal(
+    e,
+    boton,
+    idMenu,
+    idLoader,
+    idContenedor,
+    opciones, // Array local: opcionesMenuFiltroProductos
+    claveTitulo, // Por ejemplo: "Modificación"
+    idInputBuscar,
+    placeholderInput,
+    textoError,
+    nombreInputTarjeta,
+    tipoFiltro
+) {
+    e.stopPropagation();
+
+    AgregarMenu(idMenu, boton, function ($menu) {
+        $menu.html('');
+        CrearLoader(idLoader, idMenu);
+
+        setTimeout(() => {
+            const entrada = opciones.find(item => item.titulo === claveTitulo);
+            const subopciones = entrada ?.opciones ?? [];
+            console.log(subopciones)
+            // Formatear subopciones al formato esperado por ImprimirTarjetas
+            const datosFormateados = {
+                data: subopciones.map((op, index) => ({
+                    ID: op.id || `op_${index}`,
+                    Nombre: op.titulo || op.nombre || 'Sin título',
+                    Categoria: op.categoria
+                }))
+            };
+            console.log(datosFormateados)
+            if (datosFormateados.data.length > 0) {
+                $menu.html(`
+                    <div class="anchura-100-por-ciento-padding-10px altura-100-por-ciento-menos-20-px padding-10px position-relative">
+                        <div class="anchura-100-por-ciento altura-40-px flex flex-center margin-10-px-auto">
+                            <div class="bg-color-input altura-100-por-ciento anchura-100-por-ciento borde-redondeado-5-px">
+                                <input type="text" class="input" id="${idInputBuscar}" placeholder="${placeholderInput}">
+                            </div>
+                        </div>
+                        <div class="anchura-100-por-ciento altura-100-por-ciento-menos-60-px margin-10-px-auto overflow-auto">
+                            <div class="anchura-100-por-ciento altura-100-por-ciento overflow-auto" style="max-height: 200px;">
+                                <div class="anchura-100-por-ciento overflow-auto" id="${idContenedor}"></div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+
+                ImprimirTarjetas(datosFormateados, $(`#${idContenedor}`), nombreInputTarjeta, 'checkbox');
+                EventoBuscarEnObjeto(datosFormateados, $(`#${idContenedor}`), $(`#${idInputBuscar}`), textoError);
+                EventoClickFiltro(nombreInputTarjeta, tipoFiltro)
+            } else {
+                $menu.html(`
+                    <div class="anchura-100-por-ciento">
+                        <div class="anchura-100-por-ciento flex flex-center margin-10-px-auto position-relative">
+                            <img src="../../icons/basic/astronauta.png" style="height:80px">
+                        </div>
+                        <div class="anchura-100-por-ciento altura-50-px flex flex-center">
+                            <span>${textoError}</span>
+                        </div>
+                    </div>
+                `).addClass('flex flex-center');
+            }
+
+            EliminarLoader(idLoader);
+        }, 100); // Delay opcional
+    }, true);
+}
+
+function AgregarMenuDesdeJSONExterno(
+    e,
+    boton,
+    idMenu,
+    idLoader,
+    idContenedor,
+    datosJSONUrl, // URL del archivo JSON externo
+    claveJSON, // Clave que quieres extraer (como 'Tipos')
+    idInputBuscar,
+    placeholderInput,
+    textoError,
+    nombreInputTarjeta,
+    tipoFiltro
+) {
+    e.stopPropagation();
+
+    AgregarMenu(idMenu, boton, function ($menu) {
+        $menu.html('');
+        CrearLoader(idLoader, idMenu);
+
+        // Cargar datos desde JSON externo
+        $.getJSON(datosJSONUrl)
+            .done(function (jsonCompleto) {
+                // Verifica si la clave existe en el JSON
+                const datosJSON = jsonCompleto[claveJSON];
+
+                // Verifica si 'datosJSON' es un array no vacío
+                if (Array.isArray(datosJSON) && datosJSON.length > 0) {
+                    $menu.html(`
+                        <div class="anchura-100-por-ciento-padding-10px altura-100-por-ciento-menos-20-px padding-10px position-relative">
+                            <div class="anchura-100-por-ciento altura-40-px flex flex-center margin-10-px-auto">
+                                <div class="bg-color-input altura-100-por-ciento anchura-100-por-ciento borde-redondeado-5-px">
+                                    <input type="text" class="input" id="${idInputBuscar}" placeholder="${placeholderInput}">
+                                </div>
+                            </div>
+                            <div class="anchura-100-por-ciento altura-100-por-ciento-menos-60-px margin-10-px-auto overflow-auto">
+                                <div class="anchura-100-por-ciento altura-100-por-ciento overflow-auto" style="max-height: 200px;">
+                                    <div class="anchura-100-por-ciento overflow-auto" id="${idContenedor}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+
+                    // Si el JSON es de tipo correcto, pasarlo a la función para imprimir tarjetas
+                    const datosFormateados = transformarDatosParaTarjetasExterno(datosJSON);
+                    ImprimirTarjetas(datosFormateados, $(`#${idContenedor}`), nombreInputTarjeta, 'checkbox');
+
+                    // Event listeners para buscar en el objeto
+                    EventoBuscarEnObjeto(datosJSON, $(`#${idContenedor}`), $(`#${idInputBuscar}`), textoError);
+                    EventoClickFiltro(nombreInputTarjeta, tipoFiltro)
+                } else {
+                    // Si no hay datos en el JSON o no es un array válido
+                    $menu.html(`
+                        <div class="anchura-100-por-ciento">
+                            <div class="anchura-100-por-ciento flex flex-center margin-10-px-auto position-relative">
+                                <img src="../../icons/basic/astronauta.png" style="height:80px">
+                            </div>
+                            <div class="anchura-100-por-ciento altura-50-px flex flex-center">
+                                <span>${textoError}</span>
+                            </div>
+                        </div>
+                    `).addClass('flex flex-center');
+                }
+
+                EliminarLoader(idLoader);
+            })
+            .fail(function (err) {
+                console.error("Error al cargar JSON externo:", err);
+                EliminarLoader(idLoader);
+
+                // Mostrar mensaje de error si no se pudo cargar el JSON
+                const contenido = ComponerContenidoAdvertencia('../../icons/windows/eliminar.png', 'Error', 'No se pudo cargar el menú');
+                MostrarModal(contenido, false);
+                setTimeout(CerrarModal, 1000);
+            });
+    }, true);
+}
+
+function transformarDatosParaTarjetasExterno(datos) {
+    return {
+        data: datos.map(item => ({
+            ID: item.value, // Asignar value a ID
+            Nombre: item.text // Asignar text a Nombre
+        }))
+    };
+}
+
+async function Obtener_Productos_Busqueda_Filtro_Base_Datos(pagina = 1, opcion, subopcion) {
+    try {
+        if (pagina <= 0 || RegistrosPorPagina <= 0) {
+            throw new Error("Los parámetros 'pagina' y 'RegistrosPorPagina' deben ser mayores que 0.");
+        }
+
+        const data = {
+            accion: 'Buscar_Productos_Con_Filtro',
+            data: {
+                pagina,
+                registrosPorPagina: RegistrosPorPagina,
+                opcion: opcion,
+                subopcion: subopcion,
+                sucursal: sucursalSeleccionada
+            }
+        };
+
+        const response = await ajaxConParametros(undefined, data);
+        console.log(response)
+        const parsedResponse = JSON.parse(response);
+
+        return parsedResponse; // Si hay error, se maneja en el catch
+    } catch (error) {
+        console.error("Error al obtener productos:", error);
+
+        /*const contenido = ComponerContenidoAdvertencia(
+            '../../icons/windows/eliminar.png',
+            'Error',
+            'Intenta más tarde'
+        );
+        MostrarModal(contenido, false);*/
+
+        return {
+            success: false,
+            data: []
+        };
+    }
+}
+
+async function Obtener_Productos_Busqueda_Filtro_Rango_Fecha_Base_Datos(pagina = 1, opcion, subopcion, fechaInicio, fechaFinal) {
+    try {
+        if (pagina <= 0 || RegistrosPorPagina <= 0) {
+            throw new Error("Los parámetros 'pagina' y 'RegistrosPorPagina' deben ser mayores que 0.");
+        }
+
+        const data = {
+            accion: 'Buscar_Productos_Con_Filtro_Rango_Fecha',
+            data: {
+                pagina,
+                registrosPorPagina: RegistrosPorPagina,
+                opcion: opcion,
+                subopcion: subopcion,
+                fechaInicio: fechaInicio,
+                fechaFinal: fechaFinal,
+                sucursal: sucursalSeleccionada
+            }
+        };
+
+        const response = await ajaxConParametros(undefined, data);
+        console.log(response)
+        const parsedResponse = JSON.parse(response);
+
+        return parsedResponse; // Si hay error, se maneja en el catch
+    } catch (error) {
+        console.error("Error al obtener productos:", error);
+
+        /*const contenido = ComponerContenidoAdvertencia(
+            '../../icons/windows/eliminar.png',
+            'Error',
+            'Intenta más tarde'
+        );
+        MostrarModal(contenido, false);*/
+
+        return {
+            success: false,
+            data: []
+        };
+    }
+}
+
+function EventoClickFiltro(nombreInputTarjeta, tipoFiltro) {
+    $(document).off().on('change', `[name="${nombreInputTarjeta}"]`, function () {
+        const $this = $(this);
+        var opcion = $(this).data('name')
+        if (!((tipoFiltro === 'Modificacion' || tipoFiltro === 'Creacion') && opcion === 'Rango de fecha')) {
+            // Código a ejecutar si NO es Modificación o Creación con opción "Rango de fecha"        
+            if ($this.is(':checked')) {
+                // Desmarcar todos los demás del mismo grupo
+                $(`[name="${nombreInputTarjeta}"]`).not($this).prop('checked', false);
+                FiltroProductos = true
+                tipodeFiltro = tipoFiltro
+                $(".boton-has-opciones")
+                    .removeClass('tarjeta-active') // Quitar clase a todos
+                    .filter(`[data-name="${tipodeFiltro}"]`) // Filtrar el que coincida
+                    .addClass('tarjeta-active'); // Agregar clase solo a ese
+                opcionFiltro = opcion
+                RenderizarProductosFiltrados(1, tipoFiltro, $this.data('id'));
+            } else {
+                FiltroProductos = false
+                opcionFiltro = false
+                $(".boton-has-opciones").removeClass('tarjeta-active') // Quitar clase a todos
+                RenderizarProductos(1);
+            }
+        } else {
+            if ($this.is(':checked')) {
+                const id = $this.data('id');
+                let idInputFiltroRangoInicio, idInputFiltroRangoFin;
+            
+                if (tipoFiltro === 'Modificacion') {
+                    idInputFiltroRangoInicio = "InputRangoFechaInicioModificacion";
+                    idInputFiltroRangoFin = "InputRangoFechaFinModificacion";
+                } else if (tipoFiltro === 'Creacion') {
+                    idInputFiltroRangoInicio = "InputRangoFechaInicioCreacion";
+                    idInputFiltroRangoFin = "InputRangoFechaFinCreacion";
+                }
+            
+                if ($("#ContenedorInputsFechaFiltroRango").length === 0) {
+                    $("body").append(`
+                        <div class="anchura-80-por-ciento bg-color-white overflow-auto padding-10px-lateral borde-redondeado-10-px box-shadow-1"
+                             id="ContenedorInputsFechaFiltroRango"
+                             style="position: fixed;top: 30px;left: 50%;transform: translateX(-50%);z-index: 9999;min-width: 500px;width: 80%;">
+                            <div class="anchura-100-por-ciento altura-100-por-ciento overflow-auto margin-10-px-auto">
+                                <form class="overflow-auto margin-10-px-auto altura-100-por-ciento">
+                                    <div class="overflow-auto flex flex-center altura-100-por-ciento">
+                                        <div class="anchura-50-por-ciento-con-padding-5px-lateral padding-5px-lateral altura-100-por-ciento">
+                                            <div class="anchura-100-por-ciento altura-30-px flex flex-left font-09-rem">
+                                                <span class="label-input">Fecha inicio</span>
+                                            </div>
+                                            <div class="anchura-100-por-ciento altura-40-px">
+                                                <div class="bg-color-input altura-100-por-ciento anchura-100-por-ciento borde-redondeado-5-px">
+                                                    <input type="date" class="input" id="${idInputFiltroRangoInicio}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="anchura-50-por-ciento-con-padding-5px-lateral padding-5px-lateral altura-100-por-ciento">
+                                            <div class="anchura-100-por-ciento altura-30-px flex flex-left font-09-rem">
+                                                <span class="label-input">Fecha final</span>
+                                            </div>
+                                            <div class="anchura-100-por-ciento altura-40-px">
+                                                <div class="bg-color-input altura-100-por-ciento anchura-100-por-ciento borde-redondeado-5-px">
+                                                    <input type="date" class="input" id="${idInputFiltroRangoFin}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="anchura-100-por-ciento altura-40-px flex flex-center margin-10-px-auto">
+                                <div class="anchura-50-por-ciento-con-padding-5px-lateral altura-100-por-ciento flex flex-left">
+                                    <a class="boton boton-solo-letra" id="BotonCerrarContenedorFiltroRango">Cancelar</a>
+                                </div>
+                                <div class="anchura-50-por-ciento-con-padding-5px-lateral altura-100-por-ciento flex flex-right">
+                                    <a class="boton altura-35-px padding-10px-lateral boton-importante flex flex-center font-09-rem position-relative borde-redondeado-5-px" id="BotonFiltroRangoFecha">
+                                        <span>Filtrar</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                } else {
+                    // Si ya existe, solo actualiza los IDs de los inputs
+                    $("#ContenedorInputsFechaFiltroRango input[type='date']").eq(0).attr("id", idInputFiltroRangoInicio).val('');
+                    $("#ContenedorInputsFechaFiltroRango input[type='date']").eq(1).attr("id", idInputFiltroRangoFin).val('');
+                }
+            
+                // Eliminar posibles listeners anteriores para evitar duplicación
+                $(document).off("click", "#BotonFiltroRangoFecha");
+            
+                // Asignar evento al botón de filtrar
+                $(document).on("click", "#BotonFiltroRangoFecha", function (e) {
+                    const fechaInicio = $("#" + idInputFiltroRangoInicio).val();
+                    const fechaFinal = $("#" + idInputFiltroRangoFin).val();
+            
+                    if (!fechaInicio) {
+                        const contenido = ComponerContenidoAdvertencia('../../icons/windows/exclamacion.png', 'Error', 'Ingresa una fecha de inicio');
+                        MostrarModal(contenido, true);
+                    } else if (!fechaFinal) {
+                        const contenido = ComponerContenidoAdvertencia('../../icons/windows/exclamacion.png', 'Error', 'Ingresa una fecha final');
+                        MostrarModal(contenido, true);
+                    } else {
+                        $(`[name="${nombreInputTarjeta}"]`).not($this).prop('checked', false);
+                        FiltroProductos = true;
+                        tipodeFiltro = tipoFiltro;
+                        $(".boton-has-opciones")
+                            .removeClass('tarjeta-active')
+                            .filter(`[data-name="${tipodeFiltro}"]`)
+                            .addClass('tarjeta-active');
+                        opcionFiltro = opcion;
+                        RenderizarProductosFiltradosRangoFecha(1, opcion, id, fechaInicio, fechaFinal);
+                        CerrarModal();
+                    }
+                });
+                $("#BotonCerrarContenedorFiltroRango").click(function(e)
+            {
+                $("#ContenedorInputsFechaFiltroRango").remove()
+            })
+            }
+            else {
+                FiltroProductos = false
+                opcionFiltro = false
+                $(".boton-has-opciones").removeClass('tarjeta-active') // Quitar clase a todos
+                RenderizarProductos(1);
+            }
+        }
+        $("#ContenedorMenuFiltroProductos").slideUp(() => $("#ContenedorMenuFiltroProductos").empty());
+    });
+
+}
+
+function VerificarClaseBotonFiltro($botonClicado) {
+    $(".boton-has-opciones").each(function () {
+        const $btn = $(this);
+        const mismoBoton = $btn.is($botonClicado);
+        const mismoFiltro = $btn.data('name') == tipodeFiltro;
+
+        if (mismoBoton || mismoFiltro) {
+            $btn.addClass('tarjeta-active');
+        } else {
+            $btn.removeClass('tarjeta-active');
+        }
+    });
+}
+
+async function RenderizarProductosFiltradosRangoFecha(pagina, opcion, subopcion, fechaInicio, fechaFinal) {
+    try {
+        const parsedResponse = await Obtener_Productos_Busqueda_Filtro_Rango_Fecha_Base_Datos(pagina, opcion, subopcion, fechaInicio, fechaFinal);
+        if (parsedResponse.success) {
+            const productos = parsedResponse.data;
+
+            if (productos.length === 0) {
+                $("#ContenedorTarjetasExistenciasProductos, #ContenedorTarjetasInformacionProductos, #ContenedorTarjetasDescripcionProducto").empty();
+                $("#ContenedorTablaProductos").html(ImprimirNoHayResultados($("#ContenedorTablaProductos"), 'No hay productos')).addClass('flex flex-center');
+            } else {
+                $("#ContenedorTablaProductos").removeClass('flex flex-center').empty();
+                if ($("#ContenedorTablaProductos").is(":empty")) {
+                    ImprimirContenedorTablaProductos()
+                }
+                ProcesarInformacionProductos(productos, 'ContenedorTablaProductos');
+                EventosTablaProductos();
+                VerificarSeleccionTodosProductos()
+                ActualizarPaginador(
+                    parsedResponse.totalRegistros,
+                    parsedResponse.paginaActual,
+                    parsedResponse.registrosPorPagina,
+                    (nuevaPagina) => RenderizarProductosFiltradosRangoFecha(nuevaPagina, opcion, subopcion,fechaInicio,fechaFinal)
+                );
+            }
+        } else {
+            const contenido = ComponerContenidoAdvertencia(
+                '../../icons/windows/eliminar.png',
+                'Error',
+                parsedResponse.message || 'No se encontraron productos'
+            );
+            MostrarModal(contenido, false);
+        }
+    } catch (error) {
+        console.error(error);
+        const contenido = ComponerContenidoAdvertencia(
+            '../../icons/windows/eliminar.png',
+            'Error',
+            'Intenta más tarde'
+        );
+        MostrarModal(contenido, false);
+    }
+}
+
+
+function EventosBotonesAccionesProducto(id) {
+    $("[name='BotonEditarProducto']").off().on('click', function (e) {
+        console.log(id)
+    })
 }

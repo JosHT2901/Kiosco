@@ -1534,3 +1534,443 @@ function Buscar_Productos_Con_Existencias($data)
     
     
 }
+
+function Obtener_Sucursales_Con_Nombre_Sucursal_Actual()
+{
+    try {
+        $conexion = Conexion(true); // Asegúrate de que devuelve una instancia válida de PDO
+        session_start();
+        if (!$conexion) {
+            throw new Exception("No se pudo conectar a la base de datos.");
+        }
+
+        $sql = "SELECT * FROM Sucursales";
+        $query = $conexion->prepare($sql);
+        $query->execute();
+        $rows = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        // Obtener la sucursal actual desde la sesión
+        $sucursalActualID = isset($_SESSION['ID_Sucursal']) ? $_SESSION['ID_Sucursal'] : null;
+        $sucursalActualNombre = isset($_SESSION['Nombre_Sucursal']) ? $_SESSION['Nombre_Sucursal'] : null;
+
+        if (empty($rows)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'No hay resultados',
+                'sucursalActualID' => $sucursalActualID, // ID de la sucursal actual
+                'sucursalActualNombre' => $sucursalActualNombre // Nombre de la sucursal actual
+            ]);
+        } else {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Sucursales obtenidas exitosamente',
+                'data' => $rows,
+                'sucursalActualID' => $sucursalActualID, // ID de la sucursal actual
+                'sucursalActualNombre' => $sucursalActualNombre // Nombre de la sucursal actual
+            ]);
+        }
+    } catch (PDOException $e) {
+        // Manejo de error de base de datos
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error en la base de datos.',
+            'error' => $e->getMessage(),
+            'sucursalActualID' => $sucursalActualID, // ID de la sucursal actual en caso de error
+            'sucursalActualNombre' => $sucursalActualNombre // Nombre de la sucursal actual en caso de error
+        ]);
+    } catch (Exception $e) {
+        // Manejo de errores generales
+        echo json_encode([
+            'success' => false,
+            'message' => 'Ocurrió un error inesperado.',
+            'error' => $e->getMessage(),
+            'sucursalActualID' => $sucursalActualID, // ID de la sucursal actual en caso de error
+            'sucursalActualNombre' => $sucursalActualNombre // Nombre de la sucursal actual en caso de error
+        ]);
+    }
+}
+
+
+function Obtener_Productos_Otra_Sucursal($data) {
+    try {
+        // Conexión a la base de datos
+        $conexion = Conexion(true);
+        if (!$conexion) {
+            throw new Exception("Error de conexión a la base de datos.");
+        }
+
+        // Validar que el parámetro 'sucursal' exista
+        if (!isset($data['sucursal'])) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Sucursal no especificada.'
+            ]);
+            return;
+        }
+
+        $SucursalID = intval($data['sucursal']); // Convertir a entero
+
+        // Obtener parámetros de paginación
+        $pagina = isset($data['pagina']) ? intval($data['pagina']) : 1;
+        $registrosPorPagina = isset($data['registrosPorPagina']) ? intval($data['registrosPorPagina']) : 10;
+
+        $offset = ($pagina - 1) * $registrosPorPagina;
+
+        // Consulta principal
+        $sql = "SELECT 
+                    p.ID AS ProductoID,
+                    p.Codigo,
+                    p.Descripcion,
+                    p.Departamento,
+                    d.Nombre AS Departamento,
+                    u.Descripcion AS Unidad,
+                    p.Tipo,
+                    FORMAT(p.`I.V.A.`, 2) AS IVA,
+                    FORMAT(p.`I.E.P.S.`, 2) AS IEPS,
+                    COALESCE(SUM(CASE WHEN i.Sucursal = :SucursalActual THEN i.Existencia ELSE 0 END), 0) AS ExistenciasSucursalActual,
+                    COALESCE(SUM(CASE WHEN i.Sucursal != :SucursalActual THEN i.Existencia ELSE 0 END), 0) AS ExistenciasOtrasSucursales,
+                    FORMAT(pp.Precio_Costo, 2) AS Precio_Costo_Sin_Impuestos,
+                    FORMAT(
+                        CASE 
+                            WHEN (pp.Precio_Menudeo + (pp.Precio_Menudeo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100) < 0.20 
+                                THEN FLOOR((pp.Precio_Menudeo + (pp.Precio_Menudeo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100))
+                            WHEN (pp.Precio_Menudeo + (pp.Precio_Menudeo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100) < 0.60 
+                                THEN FLOOR((pp.Precio_Menudeo + (pp.Precio_Menudeo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100)) + 0.50
+                            ELSE CEIL((pp.Precio_Menudeo + (pp.Precio_Menudeo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100))
+                        END, 2
+                    ) AS Precio_Menudeo_Con_Impuestos_Redondeado,
+                    FORMAT(
+                        CASE 
+                            WHEN (pp.Precio_Medio_Mayoreo + (pp.Precio_Medio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100) < 0.20 
+                                THEN FLOOR((pp.Precio_Medio_Mayoreo + (pp.Precio_Medio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100))
+                            WHEN (pp.Precio_Medio_Mayoreo + (pp.Precio_Medio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100) < 0.60 
+                                THEN FLOOR((pp.Precio_Medio_Mayoreo + (pp.Precio_Medio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100)) + 0.50
+                            ELSE CEIL((pp.Precio_Medio_Mayoreo + (pp.Precio_Medio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100))
+                        END, 2
+                    ) AS Precio_Medio_Mayoreo_Con_Impuestos_Redondeado,
+                    FORMAT(
+                        CASE 
+                            WHEN (pp.Precio_Mayoreo + (pp.Precio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100) < 0.20 
+                                THEN FLOOR((pp.Precio_Mayoreo + (pp.Precio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100))
+                            WHEN (pp.Precio_Mayoreo + (pp.Precio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100) < 0.60 
+                                THEN FLOOR((pp.Precio_Mayoreo + (pp.Precio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100)) + 0.50
+                            ELSE CEIL((pp.Precio_Mayoreo + (pp.Precio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100))
+                        END, 2
+                    ) AS Precio_Mayoreo_Con_Impuestos_Redondeado
+                FROM 
+                    Productos p
+                LEFT JOIN 
+                    Inventario i ON p.ID = i.Producto
+                LEFT JOIN
+                    Departamentos d ON p.Departamento = d.ID
+                LEFT JOIN
+                    Precios_Producto pp ON p.ID = pp.Producto
+                LEFT JOIN
+                    `Unidades de Venta` u ON p.Unidad = u.ID
+                GROUP BY 
+                    p.ID
+                LIMIT :registros OFFSET :offset;";
+
+        $query = $conexion->prepare($sql);
+        $query->bindParam(':SucursalActual', $SucursalID, PDO::PARAM_INT);
+        $query->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $query->bindParam(':registros', $registrosPorPagina, PDO::PARAM_INT);
+
+        $query->execute();
+        $productos = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        // Total de productos
+        $countSql = "SELECT COUNT(DISTINCT p.ID) AS total
+                     FROM Productos p
+                     LEFT JOIN Inventario i ON p.ID = i.Producto";
+        $countQuery = $conexion->prepare($countSql);
+        $countQuery->execute();
+        $totalRegistros = $countQuery->fetch(PDO::FETCH_ASSOC)['total'];
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Productos obtenidos exitosamente.',
+            'data' => $productos,
+            'totalRegistros' => $totalRegistros,
+            'paginaActual' => $pagina,
+            'registrosPorPagina' => $registrosPorPagina
+        ]);
+
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error al obtener los productos.',
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+
+function Obtener_Sucursal_Actual()
+{
+    // Asegurarse de que la sesión esté iniciada
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+
+    if (!isset($_SESSION['ID_Sucursal']) || !isset($_SESSION['Nombre_Sucursal'])) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'No se ha iniciado sesión o faltan datos de la sucursal actual.'
+        ]);
+        return;
+    }
+
+    $sucursalActualID = $_SESSION['ID_Sucursal'];
+    $sucursalActualNombre = $_SESSION['Nombre_Sucursal'];
+
+    echo json_encode([
+        'success' => true,
+        'sucursalActualID' => $sucursalActualID,
+        'sucursalActualNombre' => $sucursalActualNombre
+    ]);
+}
+
+function Buscar_Productos_Con_Filtro($data)
+{
+    try {
+        $conexion = Conexion(true);
+        if (!$conexion) {
+            throw new Exception("Error de conexión a la base de datos.");
+        }
+
+        $pagina = isset($data['pagina']) ? intval($data['pagina']) : 1;
+        $registrosPorPagina = isset($data['registrosPorPagina']) ? intval($data['registrosPorPagina']) : 10;
+        $offset = ($pagina - 1) * $registrosPorPagina;
+        $sucursal = !empty($data['sucursal']) ? intval($data['sucursal']) : null;
+        $opcion = $data['opcion'] ?? null;
+        $subopcion = $data['subopcion'] ?? null;
+
+        $filtrosSQL = " WHERE 1=1 ";
+        $parametros = [];
+        $ordenFecha = "";
+
+        if ($opcion === 'Departamentos' && $subopcion) {
+            $filtrosSQL .= " AND p.Departamento = :Subopcion ";
+            $parametros[':Subopcion'] = (int)$subopcion;
+        } elseif ($opcion === 'Unidades' && $subopcion) {
+            $filtrosSQL .= " AND p.Unidad = :Subopcion ";
+            $parametros[':Subopcion'] = (int)$subopcion;
+        } elseif ($opcion === 'Tipo' && $subopcion) {
+            $filtrosSQL .= " AND p.Tipo = :Subopcion ";
+            $parametros[':Subopcion'] = $subopcion;
+        } elseif ($opcion === 'IEPS' && $subopcion !== null) {
+            $filtrosSQL .= " AND p.`I.E.P.S.` = :Subopcion ";
+            $parametros[':Subopcion'] = (float)$subopcion;
+        } elseif ($opcion === 'IVA' && $subopcion !== null) {
+            $filtrosSQL .= " AND p.`I.V.A.` = :Subopcion ";
+            $parametros[':Subopcion'] = (float)$subopcion;
+        } elseif (($opcion === 'Modificacion' || $opcion === 'Creacion') && $subopcion) {
+            $campoFecha = $opcion === 'Modificacion' ? 'p.Fecha_Modificacion' : 'p.Fecha_Registro';
+        
+            if ($subopcion === 'Más reciente') {
+                $ordenFecha = " ORDER BY $campoFecha DESC ";
+            } elseif ($subopcion === 'Más antigua') {
+                $ordenFecha = " ORDER BY $campoFecha ASC ";
+            }
+        }
+         elseif ($opcion === 'Existencias' && $subopcion) {
+            if ($subopcion === 'ConExistencia') {
+                $filtrosSQL .= " AND (SELECT SUM(Existencia) FROM Inventario WHERE Producto = p.ID) > 0 ";
+            } elseif ($subopcion === 'SinExistencia') {
+                $filtrosSQL .= " AND (SELECT SUM(Existencia) FROM Inventario WHERE Producto = p.ID) = 0 ";
+            } elseif ($subopcion === 'BajoInventario') {
+                $filtrosSQL .= " AND (SELECT SUM(Existencia) FROM Inventario WHERE Producto = p.ID) <= 5 ";
+            }
+        }
+
+        // Total de registros
+        $sqlTotal = "SELECT COUNT(DISTINCT p.ID) AS Total
+                     FROM Productos p
+                     LEFT JOIN Inventario i ON p.ID = i.Producto
+                     LEFT JOIN Departamentos d ON p.Departamento = d.ID
+                     LEFT JOIN Precios_Producto pp ON p.ID = pp.Producto
+                     LEFT JOIN `Unidades de Venta` u ON p.Unidad = u.ID
+                     $filtrosSQL";
+
+        $queryTotal = $conexion->prepare($sqlTotal);
+        foreach ($parametros as $clave => $valor) {
+            $tipo = is_int($valor) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            $queryTotal->bindValue($clave, $valor, $tipo);
+        }
+        $queryTotal->execute();
+        $totalRegistros = (int)$queryTotal->fetchColumn();
+
+        // Consulta principal
+        $sql = "SELECT 
+                    p.ID AS ProductoID,
+                    p.Codigo,
+                    p.Descripcion,
+                    p.Departamento,
+                    d.Nombre AS Departamento,
+                    u.Descripcion AS Unidad,
+                    p.Tipo,
+                    FORMAT(p.`I.V.A.`, 2) AS IVA,
+                    FORMAT(p.`I.E.P.S.`, 2) AS IEPS,
+                    COALESCE(SUM(CASE WHEN i.Sucursal = :SucursalActual THEN i.Existencia ELSE 0 END), 0) AS ExistenciasSucursalActual,
+                    COALESCE(SUM(CASE WHEN i.Sucursal != :SucursalActual THEN i.Existencia ELSE 0 END), 0) AS ExistenciasOtrasSucursales,
+                    FORMAT(pp.Precio_Costo, 2) AS Precio_Costo_Sin_Impuestos,
+                    FORMAT(
+                        CASE 
+                            WHEN (pp.Precio_Menudeo + (pp.Precio_Menudeo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100) < 0.20 
+                                THEN FLOOR((pp.Precio_Menudeo + (pp.Precio_Menudeo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100))
+                            WHEN (pp.Precio_Menudeo + (pp.Precio_Menudeo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100) < 0.60 
+                                THEN FLOOR((pp.Precio_Menudeo + (pp.Precio_Menudeo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100)) + 0.50
+                            ELSE CEIL((pp.Precio_Menudeo + (pp.Precio_Menudeo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100))
+                        END, 2
+                    ) AS Precio_Menudeo_Con_Impuestos_Redondeado,
+                    FORMAT(
+                        CASE 
+                            WHEN (pp.Precio_Medio_Mayoreo + (pp.Precio_Medio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100) < 0.20 
+                                THEN FLOOR((pp.Precio_Medio_Mayoreo + (pp.Precio_Medio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100))
+                            WHEN (pp.Precio_Medio_Mayoreo + (pp.Precio_Medio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100) < 0.60 
+                                THEN FLOOR((pp.Precio_Medio_Mayoreo + (pp.Precio_Medio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100)) + 0.50
+                            ELSE CEIL((pp.Precio_Medio_Mayoreo + (pp.Precio_Medio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100))
+                        END, 2
+                    ) AS Precio_Medio_Mayoreo_Con_Impuestos_Redondeado,
+                    FORMAT(
+                        CASE 
+                            WHEN (pp.Precio_Mayoreo + (pp.Precio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100) < 0.20 
+                                THEN FLOOR((pp.Precio_Mayoreo + (pp.Precio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100))
+                            WHEN (pp.Precio_Mayoreo + (pp.Precio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100) < 0.60 
+                                THEN FLOOR((pp.Precio_Mayoreo + (pp.Precio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100)) + 0.50
+                            ELSE CEIL((pp.Precio_Mayoreo + (pp.Precio_Mayoreo * p.`I.E.P.S.`/100)) * (1 + p.`I.V.A.`/100))
+                        END, 2
+                    ) AS Precio_Mayoreo_Con_Impuestos_Redondeado
+                FROM 
+                    Productos p
+                LEFT JOIN Inventario i ON p.ID = i.Producto
+                LEFT JOIN Departamentos d ON p.Departamento = d.ID
+                LEFT JOIN Precios_Producto pp ON p.ID = pp.Producto
+                LEFT JOIN `Unidades de Venta` u ON p.Unidad = u.ID
+                $filtrosSQL
+                GROUP BY p.ID
+                $ordenFecha
+                LIMIT :registros OFFSET :offset";
+
+        $query = $conexion->prepare($sql);
+
+        foreach ($parametros as $clave => $valor) {
+            $tipo = is_int($valor) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            $query->bindValue($clave, $valor, $tipo);
+        }
+
+        $query->bindValue(':SucursalActual', $sucursal, PDO::PARAM_INT);
+        $query->bindValue(':registros', $registrosPorPagina, PDO::PARAM_INT);
+        $query->bindValue(':offset', $offset, PDO::PARAM_INT);
+
+        $query->execute();
+        $productos = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Productos obtenidos exitosamente.',
+            'data' => $productos,
+            'totalRegistros' => $totalRegistros,
+            'paginaActual' => $pagina,
+            'registrosPorPagina' => $registrosPorPagina
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error al obtener los productos.',
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+
+function Buscar_Productos_Con_Filtro_Rango_Fecha($data)
+{
+    try {
+        $conexion = Conexion(true);
+        if (!$conexion) {
+            throw new Exception("Error de conexión a la base de datos.");
+        }
+
+        $fechaInicio = $data['fechaInicio'] ?? null;
+        $fechaFinal = $data['fechaFinal'] ?? null;
+        $pagina = isset($data['pagina']) ? intval($data['pagina']) : 1;
+        $registrosPorPagina = isset($data['registrosPorPagina']) ? intval($data['registrosPorPagina']) : 10;
+        $offset = ($pagina - 1) * $registrosPorPagina;
+        $sucursal = !empty($data['sucursal']) ? intval($data['sucursal']) : null;
+
+        // Validar estructura de fechas
+        if (!$fechaInicio || !$fechaFinal) {
+            throw new Exception("Debe proporcionar 'fechaInicio' y 'fechaFinal'.");
+        }
+
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fechaInicio) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $fechaFinal)) {
+            throw new Exception("Formato inválido de fechas. Debe ser YYYY-MM-DD.");
+        }
+
+        $campo = 'Fecha_Registro'; // O puedes usar 'Fecha_Modificacion' si lo deseas
+
+        $filtrosSQL = " WHERE DATE(p.$campo) BETWEEN :FechaInicio AND :FechaFinal ";
+        $ordenSQL = " ORDER BY p.$campo DESC ";
+
+        // Total de registros
+        $sqlTotal = "SELECT COUNT(DISTINCT p.ID) AS Total
+                     FROM Productos p
+                     $filtrosSQL";
+
+        $queryTotal = $conexion->prepare($sqlTotal);
+        $queryTotal->bindValue(':FechaInicio', $fechaInicio);
+        $queryTotal->bindValue(':FechaFinal', $fechaFinal);
+        $queryTotal->execute();
+        $totalRegistros = (int)$queryTotal->fetchColumn();
+
+        // Consulta de productos
+        $sql = "SELECT 
+                    p.ID AS ProductoID,
+                    p.Codigo,
+                    p.Descripcion,
+                    p.Departamento,
+                    d.Nombre AS Departamento,
+                    u.Descripcion AS Unidad,
+                    p.Tipo,
+                    FORMAT(p.`I.V.A.`, 2) AS IVA,
+                    FORMAT(p.`I.E.P.S.`, 2) AS IEPS,
+                    COALESCE(SUM(CASE WHEN i.Sucursal = :SucursalActual THEN i.Existencia ELSE 0 END), 0) AS ExistenciasSucursalActual,
+                    COALESCE(SUM(CASE WHEN i.Sucursal != :SucursalActual THEN i.Existencia ELSE 0 END), 0) AS ExistenciasOtrasSucursales,
+                    FORMAT(pp.Precio_Costo, 2) AS Precio_Costo_Sin_Impuestos
+                FROM Productos p
+                LEFT JOIN Inventario i ON p.ID = i.Producto
+                LEFT JOIN Departamentos d ON p.Departamento = d.ID
+                LEFT JOIN Precios_Producto pp ON p.ID = pp.Producto
+                LEFT JOIN `Unidades de Venta` u ON p.Unidad = u.ID
+                $filtrosSQL
+                GROUP BY p.ID
+                $ordenSQL
+                LIMIT :registros OFFSET :offset";
+
+        $query = $conexion->prepare($sql);
+        $query->bindValue(':FechaInicio', $fechaInicio);
+        $query->bindValue(':FechaFinal', $fechaFinal);
+        $query->bindValue(':SucursalActual', $sucursal, PDO::PARAM_INT);
+        $query->bindValue(':registros', $registrosPorPagina, PDO::PARAM_INT);
+        $query->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $query->execute();
+        $productos = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Productos obtenidos por rango de fecha.',
+            'data' => $productos,
+            'totalRegistros' => $totalRegistros,
+            'paginaActual' => $pagina,
+            'registrosPorPagina' => $registrosPorPagina
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error al buscar productos por rango de fecha.',
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+
+

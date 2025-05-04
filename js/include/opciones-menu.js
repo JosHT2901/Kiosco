@@ -4,63 +4,152 @@ var opcionesMenuProductos = [{
         titulo: "Editar",
         icono: `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M13.94 5 19 10.06 9.062 20a2.25 2.25 0 0 1-.999.58l-5.116 1.395a.75.75 0 0 1-.92-.921l1.395-5.116a2.25 2.25 0 0 1 .58-.999L13.938 5Zm7.09-2.03a3.578 3.578 0 0 1 0 5.06l-.97.97L15 3.94l.97-.97a3.578 3.578 0 0 1 5.06 0Z" />
-            </svg>`
+            </svg>`,
+        name:"BotonEditarProducto"
     },
     {
         titulo: "Ver",
         icono: `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 9.005a4 4 0 1 1 0 8 4 4 0 0 1 0-8ZM12 5.5c4.613 0 8.596 3.15 9.701 7.564a.75.75 0 1 1-1.455.365 8.503 8.503 0 0 0-16.493.004.75.75 0 0 1-1.455-.363A10.003 10.003 0 0 1 12 5.5Z"/>
-        </svg>`
+        </svg>`,
+        name:"BotonVerProducto"
     },
     {
         titulo: "Copiar código",
         icono: `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M2 6a3 3 0 0 1 3-3h1.5a1 1 0 0 1 0 2H5a1 1 0 0 0-1 1v1.5a1 1 0 0 1-2 0V6Zm14.5-2a1 1 0 0 1 1-1H19a3 3 0 0 1 3 3v1.5a1 1 0 1 1-2 0V6a1 1 0 0 0-1-1h-1.5a1 1 0 0 1-1-1ZM3 15.5a1 1 0 0 1 1 1V18a1 1 0 0 0 1 1h1.5a1 1 0 1 1 0 2H5a3 3 0 0 1-3-3v-1.5a1 1 0 0 1 1-1Zm18 0a1 1 0 0 1 1 1V18a3 3 0 0 1-3 3h-1.5a1 1 0 1 1 0-2H19a1 1 0 0 0 1-1v-1.5a1 1 0 0 1 1-1ZM6 6.75a1 1 0 0 1 1 1v8.5a1 1 0 1 1-2 0v-8.5a1 1 0 0 1 1-1Zm5 1a1 1 0 1 0-2 0v8.5a1 1 0 1 0 2 0v-8.5Zm3-1a1 1 0 0 1 1 1v8.5a1 1 0 1 1-2 0v-8.5a1 1 0 0 1 1-1Zm5 1a1 1 0 1 0-2 0v8.5a1 1 0 1 0 2 0v-8.5Z"/>
-        </svg>`
+        </svg>`,
+        name:"BotonCopiarCodigo"
     },
     {
         titulo: "Clonar",
         icono: `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5.503 4.627 5.5 6.75v10.504a3.25 3.25 0 0 0 3.25 3.25h8.616a2.251 2.251 0 0 1-2.122 1.5H8.75A4.75 4.75 0 0 1 4 17.254V6.75c0-.98.627-1.815 1.503-2.123ZM17.75 2A2.25 2.25 0 0 1 20 4.25v13a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-13A2.25 2.25 0 0 1 8.75 2h9Z"/>
-        </svg>`
+        </svg>`,
+        name:"BotonClonarProducto"
     },
     {
         titulo: "Imprimir",
         icono: `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M18 17.5v1.25A2.25 2.25 0 0 1 15.75 21h-7.5A2.25 2.25 0 0 1 6 18.75v-1.251l-1.75.001A2.25 2.25 0 0 1 2 15.25V9.254a3.25 3.25 0 0 1 3.25-3.25l.749-.001L6 5.25A2.25 2.25 0 0 1 8.25 3h7.502a2.25 2.25 0 0 1 2.25 2.25v.753h.75a3.254 3.254 0 0 1 3.252 3.25l.003 5.997a2.249 2.249 0 0 1-2.248 2.25H18Zm-2.25-4h-7.5a.75.75 0 0 0-.75.75v4.5c0 .414.336.75.75.75h7.5a.75.75 0 0 0 .75-.75v-4.5a.75.75 0 0 0-.75-.75Zm.002-9H8.25a.75.75 0 0 0-.75.75l-.001.753h9.003V5.25a.75.75 0 0 0-.75-.75Z"/>
-        </svg>`
+        </svg>`,
+        name:"BotonImprimirEtiquetaProducto"
     },
     {
         titulo: "Eliminar",
         icono: `<svg width="24" height="24"  viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M21.5 6a1 1 0 0 1-.883.993L20.5 7h-.845l-1.231 12.52A2.75 2.75 0 0 1 15.687 22H8.313a2.75 2.75 0 0 1-2.737-2.48L4.345 7H3.5a1 1 0 0 1 0-2h5a3.5 3.5 0 1 1 7 0h5a1 1 0 0 1 1 1Zm-7.25 3.25a.75.75 0 0 0-.743.648L13.5 10v7l.007.102a.75.75 0 0 0 1.486 0L15 17v-7l-.007-.102a.75.75 0 0 0-.743-.648Zm-4.5 0a.75.75 0 0 0-.743.648L9 10v7l.007.102a.75.75 0 0 0 1.486 0L10.5 17v-7l-.007-.102a.75.75 0 0 0-.743-.648ZM12 3.5A1.5 1.5 0 0 0 10.5 5h3A1.5 1.5 0 0 0 12 3.5Z"/>}
-        </svg>`
+        </svg>`,
+        name:"BotonEliminarProducto"
     }
 ]
 
 const opcionesMenuFiltroProductos = [
     {
-        titulo: "Departamento"
+        titulo: "Departamento",
+        id:"BotonFiltroDepartamento",
+        name:"Departamentos"
     },
     {
-        titulo: "Unidad de venta"
+        titulo: "Unidad de venta",
+        id:"BotonFiltroUnidadVenta",
+        name:"Unidades"
     },
     {
-        titulo: "Tipo de venta"
+        titulo: "Tipo de venta",
+        id:"BotonFiltroTipoVenta",
+        name:"Tipo",
+        opciones:
+        [
+            {
+                titulo:'Granel',
+                id:"Granel",
+                categoria:"Tipo de venta"
+            },
+            {
+                titulo:'Unidad',
+                id:'Unidad',
+                categoria:"Tipo de venta"
+            }
+        ]
     },
     {
-        titulo: "I.E.P.S."
+        titulo: "I.E.P.S.",
+        id:"BotonFiltroIEPS",
+        name:"IEPS"
     },
     {
-        titulo: "I.V.A."
+        titulo: "I.V.A.",
+        id:"BotonFiltroIVA",
+        name:"IVA"
     },
     {
-        titulo:"Modificación"
+        titulo:"Modificación",
+        id:"BotonFiltroModificacion",
+        name:"Modificacion",
+        opciones:
+        [
+            {
+                titulo:'Más reciente',
+                id:"MasReciente",
+                categoria:"Modificacion"
+            },
+            {
+                titulo:'Más antigua',
+                id:"MasAntigua",
+                categoria:"Modificacion"
+            },
+            {
+                titulo:'Rango de fecha',
+                id:"RangoFecha",
+                categoria:"Modificacion"
+            }
+        ]
     },
     {
-        titulo:"Creación"
+        titulo:"Creación",
+        id:"BotonFiltroCreacion",
+        name:"Creacion",
+        opciones:
+        [
+            {
+                titulo:'Más reciente',
+                id:"MasReciente",
+                categoria:"Creacion"
+            },
+            {
+                titulo:'Más antigua',
+                id:"MasAntigua",
+                categoria:"Creacion"
+            },
+            {
+                titulo:'Rango de fecha',
+                id:"RangoFecha",
+                categoria:"Creacion"
+            }
+        ]
     },
     {
-        titulo:"Existencias"
+        titulo:"Existencias",
+        id:"BotonFiltroExistencias",
+        name:"Existencias",
+        opciones:
+        [
+            {
+                titulo:'Con existencia',
+                id:"ConExistencia",
+                categoria:"Existencias"
+            },
+            {
+                titulo:'Sin existencia',
+                id:"SinExistencia",
+                categoria:"Existencias"
+            },
+            {
+                titulo:'Bajo inventario',
+                id:"BajoInventario",
+                categoria:"Existencias"
+            },
+        ]
     }
 ];
 
@@ -77,7 +166,7 @@ function MostrarMenuOpciones(top, left, opciones) {
         let filasMenu = [];
         opciones.forEach(opcion => {
             filasMenu.push(`
-                <div class="anchura-100-por-ciento margin-5-px-auto flex flex-center tarjeta-hover boton-solo-icono" style="cursor: pointer;">
+                <a class="anchura-100-por-ciento margin-5-px-auto flex flex-center tarjeta-hover boton-solo-icono" style="cursor: pointer;" name="${opcion.name}">
                     <div class="anchura-40-px altura-40-px flex flex-center">
                         ${opcion.icono}
                     </div>
@@ -86,7 +175,7 @@ function MostrarMenuOpciones(top, left, opciones) {
                             <span>${opcion.titulo}</span>
                         </div>
                     </div>
-                </div>
+                </a>
             `);
         });
 
@@ -299,8 +388,7 @@ function construirMenuContextual(opciones, top, left) {
 }
 
 
-
-$(document).on("click", function (e) {
+$('html').on("click", function (e) {
     // Manejo del menú de opciones
     const $menuOpciones = $("#menu-opciones");
     const $botonOpciones = $(".BotonAbrirMenuOpciones");

@@ -89,6 +89,21 @@ switch ($_POST['accion']) {
     case 'Buscar_Productos_Con_Existencias':
         Buscar_Productos_Con_Existencias($_POST['data']);
         break;
+    case 'Obtener_Sucursales_Con_Nombre_Sucursal_Actual':
+        Obtener_Sucursales_Con_Nombre_Sucursal_Actual();
+        break;
+    case 'Obtener_Productos_Otra_Sucursal':
+        Obtener_Productos_Otra_Sucursal($_POST['data']);
+        break;
+    case 'Obtener_Sucursal_Actual':
+        Obtener_Sucursal_Actual();
+        break;
+    case 'Buscar_Productos_Con_Filtro':
+        Buscar_Productos_Con_Filtro($_POST['data']);
+        break;
+    case 'Buscar_Productos_Con_Filtro_Rango_Fecha':
+        Buscar_Productos_Con_Filtro_Rango_Fecha($_POST['data']);
+        break;
     default:
         # code...
         break;

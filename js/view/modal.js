@@ -12,7 +12,7 @@ function MostrarModal(contenido, botonCerrar = true) {
   }
   else
   {
-    $("#ContenedorModal").addClass('min-height-650px');
+    $("#ContenedorModal").addClass('min-height-600px');
   }
   if (botonCerrar) {
     $("#ContenedorBotonCerrarModal").html(`<a class="boton altura-35-px anchura-35-px tarjeta-hover borde-redondeado-50-por-ciento flex flex-center" id="modal-cerrar">
@@ -25,17 +25,6 @@ function MostrarModal(contenido, botonCerrar = true) {
     });
   } else {
     $("#ContenedorBotonCerrarModal").html('')
-  }
-  var isInIframe = false;
-
-  try {
-    isInIframe = window.self !== window.top;
-  } catch (e) {
-    isInIframe = true; // Cross-origin iframe
-  }
-
-  if (!isInIframe) {
-    $("#ContenedorModal").css('min-height', '650px')
   }
 }
 

@@ -1,6 +1,5 @@
 var seleccion = 0
 $(document).ready(function () {
-    MostrarModal(ComponerModalCargando('Obteniendo información', 'auto', '400px'), false)
     InicializarPaginaSeleccionarSucursal()
 });
 
@@ -130,15 +129,23 @@ function EventoCheckSeleccionarSucursal() {
             .then(response => {
                 response=JSON.parse(response)
                 if (response.success) {
-                    window.location.href = "inicio.php";
-                } else if (!response.success) {
-                    contenido = ComponerContenidoAdvertencia('../../icons/windows/eliminar.png', 'Error', response.message);
-                    console.log(error)
-                    MostrarModal(contenido, false)
+                    const params = new URLSearchParams(window.location.search);
+                    const returnParam = params.get("return");
+                
+                    if (returnParam) {
+                        window.location.href = decodeURIComponent(returnParam);
+                    } else {
+                        window.location.href = "inicio.php";
+                    }
+                } else {
+                    const contenido = ComponerContenidoAdvertencia('../../icons/windows/eliminar.png', 'Error', response.message);
+                    console.log(response);
+                    MostrarModal(contenido, false);
                     setTimeout(() => {
-                        CerrarModal()
+                        CerrarModal();
                     }, 1000);
                 }
+                
             })
             .catch(error => {
                 contenido = ComponerContenidoAdvertencia('../../icons/windows/eliminar.png', 'Error', 'Intenta más tarde');

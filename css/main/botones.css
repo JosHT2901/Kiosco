@@ -136,6 +136,10 @@
     color: white;
     border: 1px solid #cacaca;
 }
+.tarjeta-active>div>svg, .tarjeta-seleccionada>div>svg
+{
+    fill: white;
+}
 .tarjeta-hover-gray:hover
 {
     background-color: #e6e6e6;

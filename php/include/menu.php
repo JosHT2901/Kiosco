@@ -1,3 +1,6 @@
+<?php 
+$menuData = json_decode(file_get_contents('../../json/menu.json'), true);
+?>
 <div class="anchura-100-por-ciento altura-60-px flex flex-center" style="background-color:white">
     <div class="anchura-60-px altura-60-px flex flex-center">
         <a class="boton boton-solo-icono anchura-40-px altura-40-px tarjeta-hover borde-redondeado-50-px flex flex-center" id="BotonMenuPrincipal">
@@ -57,62 +60,20 @@
 <div class="tarjeta-menu" id="ContenedorBotonesMenuPrincipal">
     <div class="contenedor-tarjeta-menu" id="ContenedorTarjetasMenu">
         <div class="overflow-auto padding-10px-superior-inferior flex flex-wrap anchura-100-por-ciento" id="ContenedorTarjetasMenu">
+            <?php 
+                foreach($menuData as $item){
+            ?>
             <a class="tarjeta-cuadrada-menu tarjeta-hover boton">
                 <div class="anchura-100-por-ciento altura-60-px flex flex-center">
-                    <img src="../../icons/basic/cubo.png" class="anchura-40-px">
+                    <img src="<?php echo $item['icon'] ?>" class="anchura-40-px">
                 </div>
                 <div class="anchura-100-por-ciento altura-30-px flex flex-center font-08-rem" style="font-weight: 600;">
-                    <span>Inicio</span>
+                    <span><?php echo $item['label']?></span>
                 </div>
             </a>
-            <a class="tarjeta-cuadrada-menu tarjeta-hover boton">
-                <div class="anchura-100-por-ciento altura-60-px flex flex-center">
-                    <img src="../../icons/basic/caja.png" class="anchura-40-px">
-                </div>
-                <div class="anchura-100-por-ciento altura-30-px flex flex-center font-08-rem" style="font-weight: 600;">
-                    <span>Productos</span>
-                </div>
-            </a>
-            <a class="tarjeta-cuadrada-menu tarjeta-hover boton">
-                <div class="anchura-100-por-ciento altura-60-px flex flex-center">
-                    <img src="../../icons/basic/usuarios.png" class="anchura-40-px">
-                </div>
-                <div class="anchura-100-por-ciento altura-30-px flex flex-center font-08-rem" style="font-weight: 600;">
-                    <span>Usuarios</span>
-                </div>
-            </a>
-            <a class="tarjeta-cuadrada-menu tarjeta-hover boton">
-                <div class="anchura-100-por-ciento altura-60-px flex flex-center">
-                    <img src="../../icons/basic/compras.png" class="anchura-40-px">
-                </div>
-                <div class="anchura-100-por-ciento altura-30-px flex flex-center font-08-rem" style="font-weight: 600;">
-                    <span>Compras</span>
-                </div>
-            </a>
-            <a class="tarjeta-cuadrada-menu tarjeta-hover boton">
-                <div class="anchura-100-por-ciento altura-60-px flex flex-center">
-                    <img src="../../icons/basic/cajas.png" class="anchura-40-px">
-                </div>
-                <div class="anchura-100-por-ciento altura-30-px flex flex-center font-08-rem" style="font-weight: 600;">
-                    <span>Inventario</span>
-                </div>
-            </a>
-            <a class="tarjeta-cuadrada-menu tarjeta-hover boton">
-                <div class="anchura-100-por-ciento altura-60-px flex flex-center">
-                    <img src="../../icons/basic/cliente.png" class="anchura-40-px">
-                </div>
-                <div class="anchura-100-por-ciento altura-30-px flex flex-center font-08-rem" style="font-weight: 600;">
-                    <span>Clientes</span>
-                </div>
-            </a>
-            <a class="tarjeta-cuadrada-menu tarjeta-hover boton">
-                <div class="anchura-100-por-ciento altura-60-px flex flex-center">
-                    <img src="../../icons/basic/reporte.png" class="anchura-40-px">
-                </div>
-                <div class="anchura-100-por-ciento altura-30-px flex flex-center font-08-rem" style="font-weight: 600;">
-                    <span>Reportes</span>
-                </div>
-            </a>
+            <?php 
+                }
+            ?>
         </div>
     </div>
 </div>

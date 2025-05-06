@@ -1218,7 +1218,8 @@ function Eliminar_Imagen_Usuario()
     }
 }
 
-function Obtener_Productos_Con_Existencias($data) {
+function Obtener_Productos_Con_Existencias($data)
+{
     try {
         // Conexión a la base de datos
         $conexion = Conexion(true);
@@ -1325,7 +1326,6 @@ function Obtener_Productos_Con_Existencias($data) {
             'paginaActual' => $pagina,
             'registrosPorPagina' => $registrosPorPagina
         ]);
-
     } catch (Exception $e) {
         echo json_encode([
             'success' => false,
@@ -1398,36 +1398,36 @@ function Obtener_Sucursales_Con_Sucursal_Actual()
 
 function Buscar_Productos_Con_Existencias($data)
 {
-        try {
-            // Conexión a la base de datos
-            $conexion = Conexion(true);
-            if (!$conexion) {
-                throw new Exception("Error de conexión a la base de datos.");
-            }
-    
-            if (session_status() !== PHP_SESSION_ACTIVE) {
-                session_start();
-            }
-    
-            if (!isset($_SESSION['ID_Sucursal'])) {
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'No se ha iniciado sesión o no se ha definido la sucursal actual.'
-                ]);
-                return;
-            }
-    
-            $SucursalActual = $_SESSION['ID_Sucursal'];
-    
-            // Obtener parámetros
-            $pagina = isset($data['pagina']) ? intval($data['pagina']) : 1;
-            $registrosPorPagina = isset($data['registrosPorPagina']) ? intval($data['registrosPorPagina']) : 10;
-            $valorBusqueda = isset($data['valorBusqueda']) ? trim($data['valorBusqueda']) : '';
-    
-            $offset = ($pagina - 1) * $registrosPorPagina;
-    
-            // Base de la consulta
-            $sql = "SELECT 
+    try {
+        // Conexión a la base de datos
+        $conexion = Conexion(true);
+        if (!$conexion) {
+            throw new Exception("Error de conexión a la base de datos.");
+        }
+
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['ID_Sucursal'])) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'No se ha iniciado sesión o no se ha definido la sucursal actual.'
+            ]);
+            return;
+        }
+
+        $SucursalActual = $_SESSION['ID_Sucursal'];
+
+        // Obtener parámetros
+        $pagina = isset($data['pagina']) ? intval($data['pagina']) : 1;
+        $registrosPorPagina = isset($data['registrosPorPagina']) ? intval($data['registrosPorPagina']) : 10;
+        $valorBusqueda = isset($data['valorBusqueda']) ? trim($data['valorBusqueda']) : '';
+
+        $offset = ($pagina - 1) * $registrosPorPagina;
+
+        // Base de la consulta
+        $sql = "SELECT 
                         p.ID AS ProductoID,
                         p.Codigo,
                         p.Descripcion,
@@ -1478,61 +1478,58 @@ function Buscar_Productos_Con_Existencias($data)
                     LEFT JOIN
                         `Unidades de Venta` u ON p.Unidad = u.ID
                     WHERE 1 ";
-    
-            // Agregar filtro si se está buscando algo
-            if (!empty($valorBusqueda)) {
-                $sql .= " AND (p.Descripcion LIKE :busqueda OR p.Codigo LIKE :busqueda) ";
-            }
-    
-            $sql .= " GROUP BY p.ID LIMIT :registros OFFSET :offset;";
-    
-            $query = $conexion->prepare($sql);
-            $query->bindParam(':SucursalActual', $SucursalActual, PDO::PARAM_INT);
-            if (!empty($valorBusqueda)) {
-                $valorBusquedaParam = "%$valorBusqueda%";
-                $query->bindParam(':busqueda', $valorBusquedaParam, PDO::PARAM_STR);
-            }
-            $query->bindParam(':registros', $registrosPorPagina, PDO::PARAM_INT);
-            $query->bindParam(':offset', $offset, PDO::PARAM_INT);
-    
-            $query->execute();
-            $productos = $query->fetchAll(PDO::FETCH_ASSOC);
-    
-            // Consulta para contar total de registros con búsqueda aplicada
-            $countSql = "SELECT COUNT(DISTINCT p.ID) AS total
+
+        // Agregar filtro si se está buscando algo
+        if (!empty($valorBusqueda)) {
+            $sql .= " AND (p.Descripcion LIKE :busqueda OR p.Codigo LIKE :busqueda) ";
+        }
+
+        $sql .= " GROUP BY p.ID LIMIT :registros OFFSET :offset;";
+
+        $query = $conexion->prepare($sql);
+        $query->bindParam(':SucursalActual', $SucursalActual, PDO::PARAM_INT);
+        if (!empty($valorBusqueda)) {
+            $valorBusquedaParam = "%$valorBusqueda%";
+            $query->bindParam(':busqueda', $valorBusquedaParam, PDO::PARAM_STR);
+        }
+        $query->bindParam(':registros', $registrosPorPagina, PDO::PARAM_INT);
+        $query->bindParam(':offset', $offset, PDO::PARAM_INT);
+
+        $query->execute();
+        $productos = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        // Consulta para contar total de registros con búsqueda aplicada
+        $countSql = "SELECT COUNT(DISTINCT p.ID) AS total
                          FROM Productos p
                          LEFT JOIN Inventario i ON p.ID = i.Producto
                          WHERE 1 ";
-    
-            if (!empty($valorBusqueda)) {
-                $countSql .= " AND (p.Descripcion LIKE :busqueda OR p.Codigo LIKE :busqueda) ";
-            }
-    
-            $countQuery = $conexion->prepare($countSql);
-            if (!empty($valorBusqueda)) {
-                $countQuery->bindParam(':busqueda', $valorBusquedaParam, PDO::PARAM_STR);
-            }
-            $countQuery->execute();
-            $totalRegistros = $countQuery->fetch(PDO::FETCH_ASSOC)['total'];
-    
-            echo json_encode([
-                'success' => true,
-                'message' => 'Productos obtenidos exitosamente.',
-                'data' => $productos,
-                'totalRegistros' => $totalRegistros,
-                'paginaActual' => $pagina,
-                'registrosPorPagina' => $registrosPorPagina
-            ]);
-    
-        } catch (Exception $e) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Error al obtener los productos.',
-                'error' => $e->getMessage()
-            ]);
+
+        if (!empty($valorBusqueda)) {
+            $countSql .= " AND (p.Descripcion LIKE :busqueda OR p.Codigo LIKE :busqueda) ";
         }
-    
-    
+
+        $countQuery = $conexion->prepare($countSql);
+        if (!empty($valorBusqueda)) {
+            $countQuery->bindParam(':busqueda', $valorBusquedaParam, PDO::PARAM_STR);
+        }
+        $countQuery->execute();
+        $totalRegistros = $countQuery->fetch(PDO::FETCH_ASSOC)['total'];
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Productos obtenidos exitosamente.',
+            'data' => $productos,
+            'totalRegistros' => $totalRegistros,
+            'paginaActual' => $pagina,
+            'registrosPorPagina' => $registrosPorPagina
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error al obtener los productos.',
+            'error' => $e->getMessage()
+        ]);
+    }
 }
 
 function Obtener_Sucursales_Con_Nombre_Sucursal_Actual()
@@ -1591,7 +1588,8 @@ function Obtener_Sucursales_Con_Nombre_Sucursal_Actual()
 }
 
 
-function Obtener_Productos_Otra_Sucursal($data) {
+function Obtener_Productos_Otra_Sucursal($data)
+{
     try {
         // Conexión a la base de datos
         $conexion = Conexion(true);
@@ -1695,7 +1693,6 @@ function Obtener_Productos_Otra_Sucursal($data) {
             'paginaActual' => $pagina,
             'registrosPorPagina' => $registrosPorPagina
         ]);
-
     } catch (Exception $e) {
         echo json_encode([
             'success' => false,
@@ -1766,14 +1763,13 @@ function Buscar_Productos_Con_Filtro($data)
             $parametros[':Subopcion'] = (float)$subopcion;
         } elseif (($opcion === 'Modificacion' || $opcion === 'Creacion') && $subopcion) {
             $campoFecha = $opcion === 'Modificacion' ? 'p.Fecha_Modificacion' : 'p.Fecha_Registro';
-        
+
             if ($subopcion === 'Más reciente') {
                 $ordenFecha = " ORDER BY $campoFecha DESC ";
             } elseif ($subopcion === 'Más antigua') {
                 $ordenFecha = " ORDER BY $campoFecha ASC ";
             }
-        }
-         elseif ($opcion === 'Existencias' && $subopcion) {
+        } elseif ($opcion === 'Existencias' && $subopcion) {
             if ($subopcion === 'ConExistencia') {
                 $filtrosSQL .= " AND (SELECT SUM(Existencia) FROM Inventario WHERE Producto = p.ID) > 0 ";
             } elseif ($subopcion === 'SinExistencia') {
@@ -1973,4 +1969,134 @@ function Buscar_Productos_Con_Filtro_Rango_Fecha($data)
     }
 }
 
+function Obtener_Existencias_Producto($data)
+{
+    try {
+
+        $conexion = Conexion(true); // Conexión a la base de datos
+
+        if (!$conexion) {
+            throw new Exception("No se pudo conectar a la base de datos.");
+        }
+
+        if (!isset($data)) {
+            throw new Exception("ID de producto no especificado.");
+        }
+
+        $idProducto = $data;
+
+        // Primero, obtener la información básica del producto
+        $sqlProducto = "SELECT P.ID, P.Codigo, P.Descripcion
+                        FROM Productos AS P
+                        WHERE P.ID = :idProducto";
+
+        $queryProducto = $conexion->prepare($sqlProducto);
+        $queryProducto->bindParam(':idProducto', $idProducto, PDO::PARAM_INT);
+        $queryProducto->execute();
+        $producto = $queryProducto->fetch(PDO::FETCH_ASSOC);
+
+        if (!$producto) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Producto no encontrado.'
+            ]);
+            return;
+        }
+
+        // Obtener las existencias del producto en las diferentes sucursales
+        $sqlExistencias = "SELECT 
+        S.Nombre AS Sucursal, 
+        I.Existencia, 
+        I.`Última_actualización`
+    FROM 
+        Inventario AS I
+    JOIN 
+        Sucursales AS S ON I.Sucursal = S.ID
+    WHERE 
+        I.Producto = :idProducto";
+
+        $queryExistencias = $conexion->prepare($sqlExistencias);
+        $queryExistencias->bindParam(':idProducto', $idProducto, PDO::PARAM_INT);
+        $queryExistencias->execute();
+        $existencias = $queryExistencias->fetchAll(PDO::FETCH_ASSOC);
+
+        // Formatear la fecha en cada resultado
+        foreach ($existencias as &$fila) {
+            if (!empty($fila['Última_actualización'])) {
+                $fila['Última_actualización'] = date('d-m-Y H:i:s', strtotime($fila['Última_actualización']));
+            }
+        }
+        unset($fila); // buena práctica al usar referencias
+
+        // $existencias ahora tiene fechas formateadas
+
+        if (empty($existencias)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'No hay existencias registradas para este producto.',
+                'producto' =>  $producto
+            ]);
+        } else {
+            // Combinar la información del producto con las existencias
+            echo json_encode([
+                'success' => true,
+                'message' => 'Información del producto y existencias obtenidas correctamente.',
+                'producto' => $producto,
+                'existencias' => $existencias
+            ]);
+        }
+    } catch (PDOException $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error en la base de datos.',
+            'error' => $e->getMessage()
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Ocurrió un error inesperado.',
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+
+function Eliminar_Producto($data)
+{
+    try {
+        // Obtener el ID del producto
+        $id_producto = isset($data) ? intval($data) : 0;
+
+        // Validar ID
+        if ($id_producto <= 0) {
+            echo json_encode(['success' => false, 'message' => 'ID de producto inválido.']);
+            return;
+        }
+
+        // Conexión a la base de datos
+        $conexion = Conexion(true); // Conexión a la base de datos
+
+        // Preparar y ejecutar el llamado al procedimiento almacenado
+        $stmt = $conexion->prepare("CALL Eliminar_Producto(:productoID)");
+        $stmt->bindParam(':productoID', $id_producto, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Revisar si se generó algún mensaje de error dentro del procedimiento
+        $errorInfo = $stmt->errorInfo();
+        if ($errorInfo[0] != '00000') { // Si no es un código de éxito
+            echo json_encode([
+                'success' => false,
+                'message' => $errorInfo[2] // El mensaje de error desde la base de datos
+            ]);
+        } else {
+            echo json_encode(['success' => true, 'message' => 'Producto procesado correctamente.']);
+        }
+
+    } catch (PDOException $e) {
+        // Manejo de errores
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error en la base de datos: ' . $e->getMessage()
+        ]);
+    }
+}
 

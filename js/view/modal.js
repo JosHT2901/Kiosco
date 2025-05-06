@@ -1,10 +1,19 @@
 let permitirCerrarModal = true;
-function MostrarModal(contenido, botonCerrar = true) {
+function MostrarModal(contenido, botonCerrar = true,transparencia=true) {
   permitirCerrarModal = botonCerrar;
   $('html').addClass('no-scroll');
   $("#TarjetaModal").css('height', '').css('width', '');
   $("#ContenedorContenidoModal").html(contenido)
+
+  var background;
+  if (transparencia) {
+    background = 'rgba(0, 0, 0, 0.7)';
+  } else {
+    background = 'white';
+  }
+  $("#modal-advertencia").css('background', background);
   $('#modal-advertencia').fadeIn(200);
+  
   $("#TarjetaModal").addClass('anchura-400-px')
   if (window.self !== window.top) {
     // Estamos dentro de un iframe

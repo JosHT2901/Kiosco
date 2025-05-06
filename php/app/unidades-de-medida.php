@@ -25,7 +25,7 @@ if (empty($_SESSION) || !isset($_SESSION['Activo']) || $_SESSION['Activo'] !== t
     <div class="anchura-100-por-ciento altura-100-por-ciento-menos-60-px min-height-500px overflow-auto bg-color-white">
         <div class="anchura-100-por-ciento altura-40-px margin-10-px-auto">
             <div class="altura-100-por-ciento anchura-100-por-ciento-menos-20-px padding-10px-lateral flex flex-left ">
-                <div class="anchura-100-por-ciento altura-100-por-ciento flex flex-center borde-redondeado-10-px bg-color-input color1474c4" style="font-weight: 600;">
+                <div class="anchura-100-por-ciento altura-100-por-ciento flex flex-center borde-redondeado-10-px color1474c4">
                     <div class="anchura-200-px altura-100-por-ciento flex flex-left">
                         <a class="boton altura-30-px padding-10px-lateral boton-secundario border-1-px-6d6d6d76 flex flex-center min-width-110px position-relative borde-redondeado-5-px margin-0px-5px" href="productos.php">
                             <div class="anchura-35-px altura-100-por-ciento flex flex-center">
@@ -38,7 +38,7 @@ if (empty($_SESSION) || !isset($_SESSION['Activo']) || $_SESSION['Activo'] !== t
                             </div>
                         </a>
                     </div>
-                    <div class="altura-100-por-ciento padding-10px-lateral flex flex-left" style="width: calc(100% - 150px - 20px);">
+                    <div class="altura-100-por-ciento padding-10px-lateral flex flex-left bg-color-input borde-redondeado-5-px" style="width: calc(100% - 150px - 20px);font-weight: 600;">
                         <span>Unidades de medida</span>
                     </div>
                 </div>

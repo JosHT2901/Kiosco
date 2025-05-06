@@ -155,3 +155,13 @@ async function Obtener_Sucursales() {
     }
 }
 
+
+function ScrollHorizontal(div)
+{
+   div.on('wheel', function (e) {
+        if (e.originalEvent.ctrlKey) {
+            e.preventDefault(); // Evita el comportamiento por defecto (zoom)
+            this.scrollLeft += e.originalEvent.deltaY; // Aplica scroll horizontal
+        }
+    });
+}

@@ -104,6 +104,12 @@ switch ($_POST['accion']) {
     case 'Buscar_Productos_Con_Filtro_Rango_Fecha':
         Buscar_Productos_Con_Filtro_Rango_Fecha($_POST['data']);
         break;
+    case 'Obtener_Existencias_Producto':
+        Obtener_Existencias_Producto($_POST['data']);
+        break;
+    case 'Eliminar_Producto':
+        Eliminar_Producto($_POST['data']);
+        break;
     default:
         # code...
         break;

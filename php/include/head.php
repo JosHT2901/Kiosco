@@ -20,12 +20,13 @@
 <script src="../../library/js/jquery-3.7.1.min.js"></script>
 <script src="../../library/js/select2.min.js"></script>
 <script src="../../library/js/croppie.min.js"></script>
+<script src="../../library/js/crypto-js.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha512/0.9.0/sha512.js" integrity="sha512-2Jmsp8L71Jh1DGFX/ynlt7G1wXDrryCyTopc8IPtba992zPP8nEvYmWvbON6wXZeMMk5Uc17L8tTrBM2FtdA8w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="../../js/view/funciones-input.js"></script>
 <script src="../../js/view/modal.js"></script>
 <script src="../../js/view/opciones.js"></script>
 <script src="../../js/view/ajax.js"></script>
-
+<script src="../../js/include/funciones-adicionales.js"></script>
 <?php
     include_once "../include/modal.php";
 ?>

@@ -5,7 +5,7 @@
             
             </div>
             <div class="anchura-100-por-ciento overflow-auto contenedor" style="height:calc(100% - 40px)">
-                    <div class="anchura-100-por-ciento altura-100-por-ciento overflow-auto" id="ContenedorContenidoModal">
+                    <div class="anchura-100-por-ciento altura-100-por-ciento overflow-auto position-relative" id="ContenedorContenidoModal">
                         
                     </div>
                 </div>

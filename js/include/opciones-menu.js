@@ -8,11 +8,11 @@ var opcionesMenuProductos = [{
         name:"BotonEditarProducto"
     },
     {
-        titulo: "Ver",
+        titulo: "Ver existencias",
         icono: `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 9.005a4 4 0 1 1 0 8 4 4 0 0 1 0-8ZM12 5.5c4.613 0 8.596 3.15 9.701 7.564a.75.75 0 1 1-1.455.365 8.503 8.503 0 0 0-16.493.004.75.75 0 0 1-1.455-.363A10.003 10.003 0 0 1 12 5.5Z"/>
         </svg>`,
-        name:"BotonVerProducto"
+        name:"BotonVerExistenciasProducto"
     },
     {
         titulo: "Copiar código",
@@ -28,7 +28,7 @@ var opcionesMenuProductos = [{
         name:"BotonClonarProducto"
     },
     {
-        titulo: "Imprimir",
+        titulo: "Imprimir etiqueta",
         icono: `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M18 17.5v1.25A2.25 2.25 0 0 1 15.75 21h-7.5A2.25 2.25 0 0 1 6 18.75v-1.251l-1.75.001A2.25 2.25 0 0 1 2 15.25V9.254a3.25 3.25 0 0 1 3.25-3.25l.749-.001L6 5.25A2.25 2.25 0 0 1 8.25 3h7.502a2.25 2.25 0 0 1 2.25 2.25v.753h.75a3.254 3.254 0 0 1 3.252 3.25l.003 5.997a2.249 2.249 0 0 1-2.248 2.25H18Zm-2.25-4h-7.5a.75.75 0 0 0-.75.75v4.5c0 .414.336.75.75.75h7.5a.75.75 0 0 0 .75-.75v-4.5a.75.75 0 0 0-.75-.75Zm.002-9H8.25a.75.75 0 0 0-.75.75l-.001.753h9.003V5.25a.75.75 0 0 0-.75-.75Z"/>
         </svg>`,

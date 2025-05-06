@@ -1,0 +1,51 @@
+[
+    {
+      "label": "Inicio",
+      "icon": "../../icons/basic/cubo.png",
+      "id": "btn-inicio",
+      "href": "#inicio"
+    },
+    {
+      "label": "Productos",
+      "icon": "../../icons/basic/caja.png",
+      "id": "btn-productos",
+      "href": "#productos"
+    },
+    {
+      "label": "Usuarios",
+      "icon": "../../icons/basic/usuarios.png",
+      "id": "btn-usuarios",
+      "href": "#usuarios"
+    },
+    {
+      "label": "Compras",
+      "icon": "../../icons/basic/compras.png",
+      "id": "btn-compras",
+      "href": "#compras"
+    },
+    {
+      "label": "Inventario",
+      "icon": "../../icons/basic/cajas.png",
+      "id": "btn-inventario",
+      "href": "#inventario"
+    },
+    {
+      "label": "Clientes",
+      "icon": "../../icons/basic/cliente.png",
+      "id": "btn-clientes",
+      "href": "#clientes"
+    },
+    {
+      "label": "Facturas",
+      "icon": "../../icons/basic/factura.png",
+      "id": "btn-clientes",
+      "href": "#clientes"
+    },
+    {
+      "label": "Reportes",
+      "icon": "../../icons/basic/reporte.png",
+      "id": "btn-reportes",
+      "href": "#reportes"
+    }
+  ]
+  

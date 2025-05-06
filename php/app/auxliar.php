@@ -9,7 +9,7 @@
 </head>
 
 <body>
-  <div class="anchura-80-por-ciento bg-color-white overflow-auto padding-10px-lateral borde-redondeado-10-px box-shadow-1 position-absolute border-2-px-white"
+  <div class="anchura-80-por-ciento bg-color-white overflow-auto padding-10px-lateral borde-redondeado-10-px box-shadow-1 position-absolute"
     style="top: 30px; left: 50%; transform: translateX(-50%); z-index: 9999;">
     <div class="anchura-100-por-ciento altura-100-por-ciento overflow-auto margin-10-px-auto">
       <form class="overflow-auto margin-10-px-auto altura-100-por-ciento">

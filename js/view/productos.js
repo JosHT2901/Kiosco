@@ -30,6 +30,7 @@ $(document).ready(async function (e) {
 
     await Inicializar_Pagina_Productos();
     CerrarModal()
+    ScrollHorizontal($("#DivContenedorTarjetasInformacionProductos"))
     sucursalSeleccionada = window.sucursalActual.id
 })
 
@@ -206,7 +207,7 @@ function ProcesarInformacionProductos(objeto, div = 'ContenedorTablaPaginaProduc
                         </div>
                     </div>
                     <div class="altura-100-por-ciento position-absolute botones-tarjeta-con-botones flex flex-center" style="right:0">
-                        <a class="boton boton-solo-icono anchura-35-px altura-35-px tarjeta-hover borde-redondeado-5-px flex flex-center margin-0px-5px BotonAbrirMenuOpciones" name="BotonOpcionesProductos" data-id="${Producto.ProductoID}">
+                        <a class="boton boton-solo-icono anchura-35-px altura-35-px tarjeta-hover borde-redondeado-5-px flex flex-center margin-0px-5px BotonAbrirMenuOpciones" name="BotonOpcionesProductos" data-id="${Producto.ProductoID}" data-codigo="${Producto.Codigo}">
                            <svg width="24" height="24"  viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                            <path d="M12 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4ZM12 14a2 2 0 1 1 0-4 2 2 0 0 1 0 4ZM10 18a2 2 0 1 0 4 0 2 2 0 0 0-4 0Z"/>
                            </svg>
@@ -381,6 +382,7 @@ function EventosTablaProductos() {
     $("[name='BotonOpcionesProductos']").click(function (e) {
         const posicion = $(this).offset();
         const productoId = $(this).data("id"); // Obtener el ID del producto desde el botón
+        const productoCodigo = $(this).data('codigo')
         const filaProducto = $(`[data-name="FilaDescripcionProducto"][data-id="${productoId}"]`); // Buscar la fila correspondiente
 
         const $menu = $("#menu-opciones");
@@ -416,7 +418,7 @@ function EventosTablaProductos() {
 
             // Guardamos el ID del producto al que pertenece el menú actual
             $("#menu-opciones").data("productoId", productoId);
-            EventosBotonesAccionesProducto(productoId)
+            EventosBotonesAccionesProducto(productoId, productoCodigo)
         }
     });
     $("[name='InputCheckSelectProductos']").change(function (e) {
@@ -1872,7 +1874,7 @@ function EventoClickFiltro(nombreInputTarjeta, tipoFiltro) {
             if ($this.is(':checked')) {
                 const id = $this.data('id');
                 let idInputFiltroRangoInicio, idInputFiltroRangoFin;
-            
+
                 if (tipoFiltro === 'Modificacion') {
                     idInputFiltroRangoInicio = "InputRangoFechaInicioModificacion";
                     idInputFiltroRangoFin = "InputRangoFechaFinModificacion";
@@ -1880,7 +1882,7 @@ function EventoClickFiltro(nombreInputTarjeta, tipoFiltro) {
                     idInputFiltroRangoInicio = "InputRangoFechaInicioCreacion";
                     idInputFiltroRangoFin = "InputRangoFechaFinCreacion";
                 }
-            
+
                 if ($("#ContenedorInputsFechaFiltroRango").length === 0) {
                     $("body").append(`
                         <div class="anchura-80-por-ciento bg-color-white overflow-auto padding-10px-lateral borde-redondeado-10-px box-shadow-1"
@@ -1929,15 +1931,15 @@ function EventoClickFiltro(nombreInputTarjeta, tipoFiltro) {
                     $("#ContenedorInputsFechaFiltroRango input[type='date']").eq(0).attr("id", idInputFiltroRangoInicio).val('');
                     $("#ContenedorInputsFechaFiltroRango input[type='date']").eq(1).attr("id", idInputFiltroRangoFin).val('');
                 }
-            
+
                 // Eliminar posibles listeners anteriores para evitar duplicación
                 $(document).off("click", "#BotonFiltroRangoFecha");
-            
+
                 // Asignar evento al botón de filtrar
                 $(document).on("click", "#BotonFiltroRangoFecha", function (e) {
                     const fechaInicio = $("#" + idInputFiltroRangoInicio).val();
                     const fechaFinal = $("#" + idInputFiltroRangoFin).val();
-            
+
                     if (!fechaInicio) {
                         const contenido = ComponerContenidoAdvertencia('../../icons/windows/exclamacion.png', 'Error', 'Ingresa una fecha de inicio');
                         MostrarModal(contenido, true);
@@ -1957,12 +1959,10 @@ function EventoClickFiltro(nombreInputTarjeta, tipoFiltro) {
                         CerrarModal();
                     }
                 });
-                $("#BotonCerrarContenedorFiltroRango").click(function(e)
-            {
-                $("#ContenedorInputsFechaFiltroRango").remove()
-            })
-            }
-            else {
+                $("#BotonCerrarContenedorFiltroRango").click(function (e) {
+                    $("#ContenedorInputsFechaFiltroRango").remove()
+                })
+            } else {
                 FiltroProductos = false
                 opcionFiltro = false
                 $(".boton-has-opciones").removeClass('tarjeta-active') // Quitar clase a todos
@@ -2009,7 +2009,7 @@ async function RenderizarProductosFiltradosRangoFecha(pagina, opcion, subopcion,
                     parsedResponse.totalRegistros,
                     parsedResponse.paginaActual,
                     parsedResponse.registrosPorPagina,
-                    (nuevaPagina) => RenderizarProductosFiltradosRangoFecha(nuevaPagina, opcion, subopcion,fechaInicio,fechaFinal)
+                    (nuevaPagina) => RenderizarProductosFiltradosRangoFecha(nuevaPagina, opcion, subopcion, fechaInicio, fechaFinal)
                 );
             }
         } else {
@@ -2032,8 +2032,108 @@ async function RenderizarProductosFiltradosRangoFecha(pagina, opcion, subopcion,
 }
 
 
-function EventosBotonesAccionesProducto(id) {
+function EventosBotonesAccionesProducto(id, codigo) {
     $("[name='BotonEditarProducto']").off().on('click', function (e) {
-        console.log(id)
+
+    })
+    $("[name='BotonCopiarCodigo']").off().on('click', function (e) {
+        e.preventDefault();
+        MostrarModal(
+            ComponerModalCargando('Copiando', 'auto', '400px'),
+            false
+        );
+        // Suponiendo que el botón tiene un atributo data-codigo con el texto a copiar
+
+        if (!codigo) {
+            const contenido = ComponerContenidoAdvertencia(
+                '../../icons/windows/exclamacion.png',
+                'Error',
+                'No hay código para copiar'
+            );
+            MostrarModal(contenido, true);
+            setTimeout(() => {
+                CerrarModal()
+            }, 1000);
+            return;
+        }
+
+        // Crear un input temporal, copiar el contenido y eliminarlo
+        const $tempInput = $("<textarea>");
+        $("body").append($tempInput);
+        $tempInput.val(codigo).select();
+        document.execCommand("copy");
+        $tempInput.remove();
+
+        const contenido = ComponerContenidoAdvertencia(
+            '../../icons/windows/check.png',
+            'Listo',
+            'Código copiado'
+        );
+        MostrarModal(contenido, false);
+        setTimeout(() => {
+            CerrarModal()
+        }, 1000);
+    });
+    $("[name='BotonVerExistenciasProducto']").off().on('click', async function () {
+        if (!id) {
+            console.error("ID no definido.");
+            return;
+        }
+        // Cargar clave desde archivo externo
+        $.getJSON('../../json/config.json', function (data) {
+            const clave = data.key
+            if (!clave || clave.length !== 32) {
+                console.error("Clave inválida. Debe tener 32 caracteres.");
+                return;
+            }
+
+            const token = encodeURIComponent(encriptarAES(id.toString(), clave));
+            const url = `ver-existencias-producto.php?token=${token}`;
+            AbrirModalIframe(url, '530px');
+        }).fail(function () {
+            console.error("No se pudo cargar config.json");
+        });
+    });
+    $("[name='BotonEliminarProducto']").off().on('click', async function () {
+        MostrarModal(ComponerModalPregunta('Eliminar producto', 'Esta accion no se puede deshacer', 'auto', '400px'), false);
+        $('#BotonCancelarAccionModal').on('click', function (e) {
+            CerrarModal()
+        });
+        $('#BotonConfirmarAccionModal').on('click', function (e) {
+            MostrarModal(ComponerModalCargando('Eliminando', 'auto', '400px'), false)
+            const data = {
+                accion: 'Eliminar_Producto',
+                data: id
+            };
+
+            ajaxConParametros(undefined, data)
+                .then(response => {
+                    response = JSON.parse(response)
+                    console.log(response)
+                    if (response.success) {
+                        contenido = ComponerContenidoAdvertencia('../../icons/windows/check.png', 'Listo', 'Producto eliminado correctamente');
+                        MostrarModal(contenido, false)
+                        setTimeout(() => {
+                            CerrarModal()
+                            RenderizarProductos(1)
+                        }, 1000);
+                    } else {
+                        contenido = ComponerContenidoAdvertencia('../../icons/windows/exclamacion.png', 'Error', 'No se puede eliminar el producto: aún hay existencia en una o más sucursales.');
+                        console.log(response.message)
+                        MostrarModal(contenido, false)
+                        setTimeout(() => {
+                            CerrarModal()
+                        }, 1000);
+                    }
+                })
+                .catch(error => {
+                    contenido = ComponerContenidoAdvertencia('../../icons/windows/eliminar.png', 'Error', 'Intenta más tarde');
+                    console.log(error)
+                    MostrarModal(contenido, false)
+                    setTimeout(() => {
+                        CerrarModal()
+                    }, 1000);
+                })
+        });
     })
 }
